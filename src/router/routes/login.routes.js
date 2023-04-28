@@ -1,17 +1,17 @@
 import LoginLayout from "@/layouts/LoginLayout";
 
-import HomeView from "@/views/HomeView.vue";
+import LoginView from "@/views/login/LoginView";
 
-//import store from "@/store/index";
+import store from "@/store/index";
 
 const ifAuthenticated = (to, from, next) => {
-  // if (localStorage.getItem("vuex")) {
-  // 	store.dispatch("INIT_ACCOUNT_VUEX");
-  // }
+  if (localStorage.getItem("vuex")) {
+  	store.dispatch("INIT_ACCOUNT_VUEX");
+  }
 
-  // if (store.getters.isAuthorized) {
-  // 	next({ name: "NewTenders" });
-  // }
+  if (store.getters.isAuthorized) {
+  	next({ name: "Main" });
+  }
 
   next();
   return;
@@ -20,12 +20,12 @@ const ifAuthenticated = (to, from, next) => {
 export default [
   {
     path: "/",
-    component: HomeView,
-    name: "Home",
+    component: LoginView,
+    name: "Login",
     beforeEnter: ifAuthenticated,
     meta: {
       layout: LoginLayout,
-      title: "Дом",
+      title: "Авторизация",
     },
   },
 ];

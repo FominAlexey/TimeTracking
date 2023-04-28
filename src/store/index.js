@@ -21,7 +21,7 @@ export default createStore({
               fullName: vuexState.AccountModule.fullName,
               email: vuexState.AccountModule.email,
               role: vuexState.AccountModule.role,
-              token: vuexState.AccountModule.token,
+              userAddress: vuexState.AccountModule.userAddress,
               id: vuexState.AccountModule.id,
             },
             SettingsModule: {

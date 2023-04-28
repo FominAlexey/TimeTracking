@@ -1,16 +1,16 @@
 import UserLayout from "@/layouts/UserLayout";
 
-import AboutView from "@/views/AboutView";
-//import store from "@/store/index";
+import MainView from "@/views/user/MainView";
+import store from "@/store/index";
 
 const ifNotAuthenticated = (to, from, next) => {
-  // if (localStorage.getItem("vuex")) {
-  //   store.dispatch("INIT_ACCOUNT_VUEX");
-  // }
+  if (localStorage.getItem("vuex")) {
+    store.dispatch("INIT_ACCOUNT_VUEX");
+  }
 
-  // if (!store.getters.isAuthorized) {
-  //   next({ name: "Login" });
-  // }
+  if (!store.getters.isAuthorized) {
+    next({ name: "Login" });
+  }
 
   next();
   return;
@@ -18,13 +18,13 @@ const ifNotAuthenticated = (to, from, next) => {
 
 export default [
   {
-    path: "/About",
-    component: AboutView,
-    name: "About",
+    path: "/Main",
+    component: MainView,
+    name: "Main",
     beforeEnter: ifNotAuthenticated,
     meta: {
       layout: UserLayout,
-      title: "Об этом",
+      title: "Главная",
     },
   },
 ];
