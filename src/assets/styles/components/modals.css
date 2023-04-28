@@ -1,0 +1,15 @@
+.modal-wrapper > div {
+  min-height: 0 !important;
+}
+
+.modal-content {
+  background-color: var(--background-color) !important;
+}
+
+.modal-title {
+  display: block !important;
+}
+
+.modal-buttons {
+  display: block !important;
+}

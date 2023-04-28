@@ -1,0 +1,11 @@
+.navbar-logo {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.navbar-button {
+	justify-self: center;
+	align-self: center;
+	width: 150px;
+}

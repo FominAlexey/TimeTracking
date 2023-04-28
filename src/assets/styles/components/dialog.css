@@ -1,0 +1,9 @@
+.dialog-card {
+	box-shadow: none !important;
+}
+
+.dialog-card-text {
+	font-size: unset !important;
+	font-weight: unset !important;
+	color: unset !important;
+}
