@@ -44,6 +44,7 @@
       :headers="headers"
       :items="items"
       :search="search"
+      :multi-sort="multiSort"
       v-model:sort-by="sortBy"
       :class="{
         'customTable-mobile': isMobileDevice,
@@ -106,6 +107,10 @@ export default {
       type: Array,
       default: null,
     },
+    multiSort: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {

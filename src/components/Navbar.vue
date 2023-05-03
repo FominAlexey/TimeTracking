@@ -21,9 +21,9 @@
       v-if="isNavbarActive"
     >
       <template #prepend>
-        <div class="navbar-logo mt-10 mb-5">
+        <div class="navbar-logo">
           <v-img
-            :src="require('@/assets/img/logo.svg')"
+            :src="require('@/assets/img/logo/logo.png')"
             contain
             :max-width="logoMaxWidth"
           />
@@ -152,7 +152,7 @@ export default {
       isMobileDevice: true,
       isNavbarActive: true,
       lastScrollPosition: 0,
-      logoMaxWidth: 100,
+      logoMaxWidth: 200,
       isBurgerActive: true,
       roleUser: this.$store.getters.role,
       emailUser: this.$store.getters.email,
@@ -168,8 +168,8 @@ export default {
     checkDevice() {
       this.isMobileDevice = window.innerWidth < 1366 ? true : false;
       this.isMobileDevice
-        ? (this.logoMaxWidth = 65)
-        : (this.logoMaxWidth = 100);
+        ? (this.logoMaxWidth = 150)
+        : (this.logoMaxWidth = 200);
       this.isNavbarActive = this.isMobileDevice ? false : true;
     },
     checkBurgerButton() {

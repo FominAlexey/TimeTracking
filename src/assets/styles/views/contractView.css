@@ -1,0 +1,8 @@
+.contract-input {
+  text-align: start;
+  display: flex;
+}
+
+.contract-input {
+  max-width: 380px;
+}

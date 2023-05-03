@@ -1,0 +1,13 @@
+.editingEmployees-button {
+  color: var(--text-color) !important;
+  background: var(--background-color) !important;
+}
+
+.editingEmployees-input {
+  text-align: start;
+    display: flex;
+}
+
+.editingEmployees-input>div {
+  max-width: 380px;
+}

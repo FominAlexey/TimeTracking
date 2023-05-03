@@ -27,6 +27,7 @@
       class="pt-5"
       :headers="headers"
       :items="times"
+      :multiSort="true"
       nameTable="Просмотр времени"
       v-on:getItemInfo="openCompletedTime"
     ></custom-table>
@@ -36,7 +37,61 @@
       <loader :value="isLoadingDialog" :opacity="0" />
     </v-row>
     <div v-else>
-      <v-row class="mb-3 font-weight-bold"> Информация! </v-row>
+      <v-row class="mb-3">
+        Время начала:
+        <b class="pl-1">
+          {{ time.startDate }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
+        Время конца:
+        <b class="pl-1">
+          {{ time.endDate }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
+        Общее количество часов работы:
+        <b class="pl-1">
+          {{ time.allTime }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
+        Общее оставшихся часов:
+        <b class="pl-1">
+          {{ time.allTimeDiff }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
+        Ссылка на контракт:
+        <a :href="time.urlContract" target="_blank">
+          {{ time.urlContract }}
+        </a>
+      </v-row>
+      <v-row class="mb-3">
+        Оплата за час работы:
+        <b class="pl-1 pr-1">
+          {{ time.chequeForOneHours }}
+        </b>
+        руб.
+      </v-row>
+      <v-row class="mb-3">
+        Подтверждено менеджером:
+        <b class="pl-1">
+          {{ time.checkManager }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
+        Подтверждено бухгалетром:
+        <b class="pl-1">
+          {{ time.checkAccountant }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
+        Выплачено:
+        <b class="pl-1">
+          {{ time.isPayment }}
+        </b>
+      </v-row>
     </div>
   </custom-dialog>
   <loader :value="isLoading"></loader>
@@ -63,6 +118,13 @@ export default {
       return this.$store.getters.role == "Admin";
     },
   },
+
+  mounted() {
+    if (this.isAdmin) {
+      this.getUsers();
+    }
+  },
+
   data() {
     return {
       users: [
@@ -72,6 +134,13 @@ export default {
           email: "Lekha@test.ru",
           fullName: "Aleksey",
           role: "Admin",
+        },
+        {
+          id: 2,
+          userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c32",
+          email: "Vlad@test.ru",
+          fullName: "Vladislav",
+          role: "Worker",
         },
       ],
       user: {
@@ -112,7 +181,7 @@ export default {
         },
         {
           title: "Выплачено",
-          key: "payment",
+          key: "isPayment",
         },
       ],
       times: [
@@ -123,9 +192,21 @@ export default {
           allTimeDiff: 96,
           checkManager: "OK",
           checkAccountant: "NOT",
-          payment: "NOT",
+          isPayment: "NOT",
         },
       ],
+      time: {
+        idContract: '1',
+        startDate: formatDate.convertDate(new Date()),
+        endDate: formatDate.convertDate(new Date()),
+        allTime: 100,
+        allTimeDiff: 96,
+        checkManager: "OK",
+        checkAccountant: "NOT",
+        isPayment: "NOT",
+        urlContract: "http://localhost:8080/Contract?idContract=1",
+        chequeForOneHours: "700",
+      },
     };
   },
 
@@ -137,7 +218,9 @@ export default {
       }, 3000);
     },
 
-    getUsers() {},
+    getUsers() {
+      this.user = this.users.find((user) => user.id == this.$store.getters.id);
+    },
 
     openCompletedTime(item) {
       this.inDialog = true;
