@@ -8,11 +8,11 @@
 
 @media screen and (max-width: 1200px) {
 	.customTable-mobile tbody tr:nth-child(2n+1) td:nth-child(1) {
-		border-left: 6px solid #1976D2;
+		border-left: 6px solid #833ab4;
 	}
 
 	.customTable-mobile tbody tr:nth-child(2n) td:nth-child(1) {
-		border-left: 6px solid #00f9f9;
+		border-left: 6px solid #fcb045;
 	}
 }
 
@@ -33,4 +33,9 @@
 
 .customTable-data-label {
 	color: #999;
+}
+
+.customTable-Toolbar {
+  color: var(--text-color) !important;
+  background: var(--background-color) !important;
 }

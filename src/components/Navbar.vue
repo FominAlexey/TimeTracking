@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-app-bar
-      class="bg-blue-darken-2"
+      class="navbar-AppBar"
       :class="{
         'navbar-BurgerActive': isBurgerActive,
         'navbar-BurgerDisabled': !isBurgerActive,
@@ -66,7 +66,7 @@
           <v-list-item>
             <v-btn
               block
-              class="bg-blue-darken-2"
+              class="bg-blue-darken-2 navbar-button"
               variant="elevated"
               @click="exit"
             >

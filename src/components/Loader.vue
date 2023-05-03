@@ -8,7 +8,7 @@
       class="align-center justify-center"
       scrim="#FFFFFF"
     >
-      <v-progress-circular indeterminate color="#1976D2" size="64" />
+      <v-progress-circular indeterminate color="#fd1d1d" size="64" />
     </v-overlay>
   </v-container>
 </template>

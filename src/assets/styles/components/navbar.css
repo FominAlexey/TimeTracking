@@ -8,6 +8,8 @@
   justify-self: center;
   align-self: center;
   width: 150px;
+  color: var(--text-color) !important;
+  background: var(--background-color) !important;
 }
 
 .navbar-BurgerActive {
@@ -16,4 +18,9 @@
 
 .navbar-BurgerDisabled {
   top: -64px !important;
+}
+
+.navbar-AppBar {
+  color: var(--text-color) !important;
+  background: var(--background-color) !important;
 }

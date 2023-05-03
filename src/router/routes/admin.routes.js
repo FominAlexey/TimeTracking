@@ -4,13 +4,17 @@ import store from "@/store/index";
 import EditingEmployeesView from "@/views/user/admin/EditingEmployeesView";
 import ConfirmationPaymentView from "@/views/user/admin/ConfirmationPaymentView";
 
-const ifNotAuthenticated = (to, from, next) => {
+const ifNotAuthenticatedAdmin = (to, from, next) => {
   if (localStorage.getItem("vuex")) {
     store.dispatch("INIT_ACCOUNT_VUEX");
   }
 
   if (!store.getters.isAuthorized) {
     next({ name: "Login" });
+  }
+
+  if (store.getters.role != "Admin") {
+    next({ name: "Main" });
   }
 
   next();
@@ -22,7 +26,7 @@ export default [
     path: "/EditingEmployees",
     component: EditingEmployeesView,
     name: "EditingEmployees",
-    beforeEnter: ifNotAuthenticated,
+    beforeEnter: ifNotAuthenticatedAdmin,
     meta: {
       layout: UserLayout,
       title: "Сотрудники",
@@ -32,7 +36,7 @@ export default [
     path: "/ConfirmationPayment",
     component: ConfirmationPaymentView,
     name: "ConfirmationPayment",
-    beforeEnter: ifNotAuthenticated,
+    beforeEnter: ifNotAuthenticatedAdmin,
     meta: {
       layout: UserLayout,
       title: "Подтверждение оплаты",

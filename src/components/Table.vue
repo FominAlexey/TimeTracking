@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-v-model-argument -->
 <template>
   <v-container id="inspire" class="pl-0 pr-0 pt-0" fluid>
-    <v-toolbar dark class="bg-blue-darken-2" fixed>
+    <v-toolbar dark class="bg-blue-darken-2 customTable-Toolbar" fixed>
       <v-toolbar-title>{{ nameTable }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-text-field

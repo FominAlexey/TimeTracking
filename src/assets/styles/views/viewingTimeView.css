@@ -1,0 +1,13 @@
+.viewingTime-headerTitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.viewingTime-container-selector {
+  text-align: start;
+  display: flex;
+}
+
+.viewingTime-container-selector>div {
+  max-width: 380px;
+}
