@@ -1,11 +1,19 @@
 .navbar-logo {
-	width: 100%;
-	display: flex;
-	justify-content: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .navbar-button {
-	justify-self: center;
-	align-self: center;
-	width: 150px;
+  justify-self: center;
+  align-self: center;
+  width: 150px;
+}
+
+.navbar-BurgerActive {
+  top: 0px !important;
+}
+
+.navbar-BurgerDisabled {
+  top: -64px !important;
 }

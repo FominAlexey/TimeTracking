@@ -2,8 +2,12 @@
   <v-card>
     <v-app-bar
       class="bg-blue-darken-2"
+      :class="{
+        'navbar-BurgerActive': isBurgerActive,
+        'navbar-BurgerDisabled': !isBurgerActive,
+      }"
       prominent
-      v-if="isBurgerActive && isMobileDevice"
+      v-if="isMobileDevice"
     >
       <v-app-bar-nav-icon
         variant="text"
@@ -18,17 +22,17 @@
     >
       <template #prepend>
         <div class="navbar-logo mt-10 mb-5">
-          <!-- <v-img
-            :src="require('@/assets/img/logo/logo.png')"
+          <v-img
+            :src="require('@/assets/img/logo.svg')"
             contain
-            max-width="100"
-          /> -->
+            :max-width="logoMaxWidth"
+          />
         </div>
       </template>
 
       <v-list nav>
         <v-list-item
-          v-for="(item, i) in items"
+          v-for="(item, i) in itemsCommon"
           :key="i"
           :to="item.to"
           :prepend-icon="item.icon"
@@ -36,21 +40,29 @@
         >
         </v-list-item>
         <v-divider></v-divider>
+      </v-list>
+
+      <v-list nav>
         <v-list-item
-          to="/Settings"
-          prepend-icon="mdi-cog"
-          title="Настройки"
-        ></v-list-item>
+          v-for="(item, i) in itemsForUser()"
+          :key="i"
+          :to="item.to"
+          :prepend-icon="item.icon"
+          :title="item.title"
+        >
+        </v-list-item>
       </v-list>
       <template v-slot:append>
         <v-list>
           <v-list-item
             :title="
-              this.$store.getters.role + ' ' + this.$store.getters.fullName
+              rolesUsers.find((status) => status.value == roleUser).title +
+              ' ' +
+              fullNameUser
             "
           >
           </v-list-item>
-          <v-list-item :title="this.$store.getters.email"> </v-list-item>
+          <v-list-item :title="emailUser"> </v-list-item>
           <v-list-item>
             <v-btn
               block
@@ -70,6 +82,8 @@
 <script>
 import "@/assets/styles/components/navbar.css";
 import store from "@/store/index";
+
+import userConsts from "@/store/consts/user";
 export default {
   created() {
     window.addEventListener("resize", this.checkDevice);
@@ -85,27 +99,65 @@ export default {
   },
   data() {
     return {
-      items: [
+      itemsCommon: [
         {
-          title: "Новые тендеры",
+          title: "Главная",
           icon: "mdi-alert-decagram",
-          to: "/NewTenders",
+          to: "/Main",
         },
         {
-          title: "Тендеры для анализа",
+          title: "Просмотр времени",
           icon: "mdi-file-search-outline",
-          to: "/TendersForAnalysis",
+          to: "/ViewingTime",
         },
         {
-          title: "Тендеры в работе",
+          title: "Просмотр контракта",
           icon: "mdi-briefcase",
-          to: "/TendersInProgress",
+          to: "/Contract",
+        },
+      ],
+      itemsWorker: [
+        {
+          title: "Редактирование времени",
+          icon: "mdi-timer-outline",
+          to: "/EditingTime",
+        },
+      ],
+      itemsAdmin: [
+        {
+          title: "Подтверждение оплаты",
+          icon: "mdi-cash-check",
+          to: "/ConfirmationPayment",
+        },
+        {
+          title: "Сотрудники",
+          icon: "mdi-account-group",
+          to: "/EditingEmployees",
+        },
+      ],
+      itemsManager: [
+        {
+          title: "Подтверждение работы",
+          icon: "mdi-clipboard-check",
+          to: "/ConfirmationWork",
+        },
+      ],
+      itemsAccountant: [
+        {
+          title: "Оплата сотрудникам",
+          icon: "mdi-cash-register",
+          to: "/EmployeeBenefits",
         },
       ],
       isMobileDevice: true,
       isNavbarActive: true,
-      isBurgerActive: true,
       lastScrollPosition: 0,
+      logoMaxWidth: 100,
+      isBurgerActive: true,
+      roleUser: this.$store.getters.role,
+      emailUser: this.$store.getters.email,
+      fullNameUser: this.$store.getters.fullName,
+      rolesUsers: userConsts.roles,
     };
   },
   methods: {
@@ -115,21 +167,38 @@ export default {
     },
     checkDevice() {
       this.isMobileDevice = window.innerWidth < 1366 ? true : false;
-      this.isBurgerActive = this.isMobileDevice ? true : false;
+      this.isMobileDevice
+        ? (this.logoMaxWidth = 65)
+        : (this.logoMaxWidth = 100);
       this.isNavbarActive = this.isMobileDevice ? false : true;
     },
     checkBurgerButton() {
-      const currentScrollPosition =
-        window.pageYOffset || document.documentElement.scrollTop;
-      if (currentScrollPosition <= 0) {
-        this.isBurgerActive = true;
-        return;
+      if (!this.isNavbarActive) {
+        const currentScrollPosition = window.pageYOffset;
+        if (currentScrollPosition <= this.lastScrollPosition) {
+          this.isBurgerActive = true;
+        } else {
+          this.isBurgerActive = false;
+        }
+        this.lastScrollPosition = currentScrollPosition;
       }
-      this.isBurgerActive = currentScrollPosition < this.lastScrollPosition;
-      this.lastScrollPosition = currentScrollPosition;
     },
     openNavbar() {
       this.isNavbarActive = !this.isNavbarActive;
+    },
+    itemsForUser() {
+      if (this.roleUser == "Admin") {
+        return this.itemsAdmin;
+      }
+      if (this.roleUser == "Worker") {
+        return this.itemsWorker;
+      }
+      if (this.roleUser == "Manager") {
+        return this.itemsManager;
+      }
+      if (this.roleUser == "Accountant") {
+        return this.itemsAccountant;
+      }
     },
   },
 };

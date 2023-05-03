@@ -3,10 +3,10 @@
     <v-container v-if="state === BASE_STATE" class="pt-0 pb-0">
       <slot></slot>
     </v-container>
-    <v-container v-else-if="state === NODATA_STATE" class="pt-0 pb-0">
+    <v-container v-else-if="state === NODATA_STATE">
       <slot name="nodata">
         <div class="pt-64">
-          <h2>Нет данных</h2>
+          <h2>{{ text }}</h2>
         </div>
       </slot>
     </v-container>
@@ -38,6 +38,7 @@ export default {
       NODATA_STATE: NODATA_STATE,
       ERROR_STATE: ERROR_STATE,
       EMPTY_STATE: EMPTY_STATE,
+      text: '',
     };
   },
 
@@ -46,8 +47,9 @@ export default {
       this.state = BASE_STATE;
     },
 
-    setNoDataState() {
+    setNoDataState(text) {
       this.state = NODATA_STATE;
+      this.text = text;
     },
 
     setErrorState() {

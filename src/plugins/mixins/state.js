@@ -1,19 +1,19 @@
 export default {
-	methods: {
-		setBaseState(name) {
-			this.$refs[name].setBaseState();
-		},
+  methods: {
+    setBaseState(name) {
+      this.$refs[name].setBaseState();
+    },
 
-		setNoDataState(name) {
-			this.$refs[name].setNoDataState();
-		},
+    setNoDataState(name, text) {
+      this.$refs[name].setNoDataState(text);
+    },
 
-		setErrorState(name) {
-			this.$refs[name].setErrorState();
-		},
+    setErrorState(name) {
+      this.$refs[name].setErrorState();
+    },
 
-		setEmptyState(name) {
-			this.$refs[name].setEmptyState();
-		},
-	},
+    setEmptyState(name) {
+      this.$refs[name].setEmptyState();
+    },
+  },
 };

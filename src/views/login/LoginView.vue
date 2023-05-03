@@ -41,15 +41,15 @@ export default {
           console.error(error.message);
           return this.showMessage(`Сообщение от MetaMusk: ${error.message}`);
         });
-      this.$store.dispatch('INIT_USER_ADDRESS', accounts[0])
-      this.showMessage(`Пользователь имеет адрес ${accounts[0]}`);
+      this.$store.dispatch("INIT_USER_ADDRESS", accounts[0]);
+      console.log(`Пользователь имеет адрес ${accounts[0]}`);
       this.isLoading = false;
       if (accounts[0]) {
-        this.$store.dispatch('INIT_ACCOUNT', {
-          fullName: 'Aleksey',
-          email: 'Lekha@test.ru',
-          role: 'Developer',
-          id: '1',
+        this.$store.dispatch("INIT_ACCOUNT", {
+          fullName: "Aleksey",
+          email: "Lekha@test.ru",
+          role: "Accountant",
+          id: "1",
         });
         this.$router.push("/Main");
       }
