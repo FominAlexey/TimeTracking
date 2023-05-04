@@ -10,7 +10,7 @@ const ifAuthenticated = (to, from, next) => {
   }
 
   if (store.getters.isAuthorized) {
-    next({ name: "Main" });
+    next({ name: "ViewingTime" });
   }
 
   next();

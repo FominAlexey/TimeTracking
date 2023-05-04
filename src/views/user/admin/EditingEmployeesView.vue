@@ -31,7 +31,7 @@
     </v-row>
     <div v-else>
       <v-row class="mb-3 editingEmployees-input">
-        <div class="mt-6 mr-5">Адрес кошелька:</div>
+        <div class="mt-3 mr-5">Адрес кошелька:</div>
         <v-text-field
           v-model="worker.userAddressWallet"
           variant="solo"
@@ -42,7 +42,7 @@
         ></v-text-field>
       </v-row>
       <v-row class="mb-3 editingEmployees-input">
-        <div class="mt-6 mr-5">Ф.И.О:</div>
+        <div class="mt-3 mr-5">Ф.И.О:</div>
         <v-text-field
           v-model="worker.fullName"
           variant="solo"
@@ -53,7 +53,7 @@
         ></v-text-field>
       </v-row>
       <v-row class="mb-3 editingEmployees-input">
-        <div class="mt-6 mr-5">Почта:</div>
+        <div class="mt-3 mr-5">Почта:</div>
         <v-text-field
           v-model="worker.email"
           variant="solo"
@@ -65,7 +65,7 @@
         ></v-text-field>
       </v-row>
       <v-row class="mb-3 editingEmployees-input">
-        <div class="mt-6 mr-5">Телефон:</div>
+        <div class="mt-3 mr-5">Телефон:</div>
         <v-text-field
           v-model="worker.phone"
           variant="solo"
@@ -77,7 +77,7 @@
         ></v-text-field>
       </v-row>
       <v-row class="mb-3 editingEmployees-input">
-        <div class="mt-6 mr-5">Роль:</div>
+        <div class="mt-3 mr-5">Роль:</div>
         <v-select
           v-model="worker.role"
           density="compact"
@@ -101,7 +101,7 @@
         </b>
       </v-row>
       <v-row class="mb-3 editingEmployees-input">
-        <div class="mt-6 mr-5">Оплата за час работы:</div>
+        <div class="mt-3 mr-5">Оплата за час работы:</div>
         <v-text-field
           v-model="worker.chequeForOneHours"
           density="compact"
@@ -109,7 +109,7 @@
           clearable
           :disabled="!isEditWorker"
         ></v-text-field>
-        <div class="mt-6">руб.</div>
+        <div class="ml-2 mt-3">руб.</div>
       </v-row>
       <v-row class="mb-3" v-if="worker.contracts">
         Контракты:
@@ -170,11 +170,11 @@
   <custom-snackbar ref="snackbar" />
 </template>
 <script>
-import "@/assets/styles/views/editingEmployeesView.css";
+import "@/assets/styles/views/admin/editingEmployeesView.css";
 
 import formatDate from "@/helpers/formatDate";
-import StateMixins from "@/plugins/mixins/state";
-import MessageMixins from "@/plugins/mixins/messageView";
+import StateMixins from "@/mixins/state";
+import MessageMixins from "@/mixins/messageView";
 import userConsts from "@/store/consts/user";
 
 import Loader from "@/components/Loader.vue";

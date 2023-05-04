@@ -15,7 +15,7 @@
 import "@/assets/styles/views/loginView.css";
 //import ApiService from "@/services/api/api";
 //import store from "@/store/index";
-import MessageMixins from "@/plugins/mixins/messageView";
+import MessageMixins from "@/mixins/messageView";
 import Snackbar from "@/components/SnackBar.vue";
 
 export default {
@@ -48,10 +48,10 @@ export default {
         this.$store.dispatch("INIT_ACCOUNT", {
           fullName: "Aleksey",
           email: "Lekha@test.ru",
-          role: "Admin",
+          role: "Accountant",
           id: "1",
         });
-        this.$router.push("/Main");
+        this.$router.push("/ViewingTime");
       }
     },
   },

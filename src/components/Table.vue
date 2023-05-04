@@ -2,8 +2,9 @@
 <template>
   <v-container id="inspire" class="pl-0 pr-0 pt-0" fluid>
     <v-toolbar dark class="bg-blue-darken-2 customTable-Toolbar" fixed>
-      <v-toolbar-title>{{ nameTable }}</v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-toolbar-title class="customTable-title-toolbar">{{
+        nameTable
+      }}</v-toolbar-title>
       <v-text-field
         v-model="search"
         prepend-inner-icon="mdi-magnify"
@@ -110,8 +111,19 @@ export default {
     multiSort: {
       type: Boolean,
       default: false,
+    },
+    externalSearch: {
+      type: String,
+      default: '',
+    },
+  },
+
+  mounted() {
+    if (this.externalSearch) {
+      this.search = this.externalSearch;
     }
   },
+
   data() {
     return {
       sortBy: [{ key: "", order: "" }],
@@ -141,6 +153,8 @@ export default {
       }
     },
     customFilter(value, search, item) {
+      console.log("🚀 ~ file: Table.vue:156 ~ customFilter ~ search:", search)
+      if (value == null) return false;
       return (
         value.toString().toLocaleLowerCase().indexOf(search.toLowerCase()) !==
         -1

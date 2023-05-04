@@ -1,12 +1,13 @@
-.viewingTime-headerTitle {
+.employeeBenefits-headerTitle {
   display: flex;
   justify-content: space-between;
 }
-.viewingTime-container-selector {
+
+.employeeBenefits-container-selector {
   text-align: start;
   display: flex;
 }
 
-.viewingTime-container-selector>div {
+.employeeBenefits-container-selector>div {
   max-width: 380px;
 }

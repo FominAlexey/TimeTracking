@@ -4,7 +4,7 @@
   </v-container>
 </template>
 <script>
-import "@/assets/styles/views/editingTimeView.css";
+import "@/assets/styles/views/worker/editingTimeView.css";
 
 export default {
 

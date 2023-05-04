@@ -39,3 +39,10 @@
   color: var(--text-color) !important;
   background: var(--background-color) !important;
 }
+
+.customTable-title-toolbar>div.v-toolbar-title__placeholder {
+  display: inline-block;
+  white-space: pre-line !important;
+  word-break: break-word;
+  font-size: 1.15rem;
+}

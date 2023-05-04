@@ -1,0 +1,8 @@
+.confirmationPayment-container-selector {
+  text-align: start;
+  display: flex;
+}
+
+.confirmationPayment-container-selector>div {
+  max-width: 380px;
+}

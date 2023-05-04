@@ -4,9 +4,9 @@
   </v-container>
   <v-container
     class="viewingTime-container-selector pb-0"
-    v-if="users && isAdmin"
+    v-if="users && (isAdmin || isManager || isAccountant)"
   >
-    <h4 class="font-weight-medium text-h6 mt-5 mr-5">Сотрудник</h4>
+    <h4 class="font-weight-medium text-h6 mt-3 mr-5">Сотрудник</h4>
     <v-select
       :items="users"
       item-title="fullName"
@@ -28,6 +28,7 @@
       :headers="headers"
       :items="times"
       :multiSort="true"
+      :externalSearch="this.$route.query.search ? this.$route.query.search : ''"
       nameTable="Просмотр времени"
       v-on:getItemInfo="openCompletedTime"
     ></custom-table>
@@ -37,6 +38,12 @@
       <loader :value="isLoadingDialog" :opacity="0" />
     </v-row>
     <div v-else>
+      <v-row class="mb-3">
+        Номер времени:
+        <b class="pl-1">
+          {{ time.idTime }}
+        </b>
+      </v-row>
       <v-row class="mb-3">
         Время начала:
         <b class="pl-1">
@@ -50,6 +57,12 @@
         </b>
       </v-row>
       <v-row class="mb-3">
+        Общее рабочее время дня:
+        <b class="pl-1">
+          {{ time.diffTime }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
         Общее количество часов работы:
         <b class="pl-1">
           {{ time.allTime }}
@@ -59,6 +72,12 @@
         Общее оставшихся часов:
         <b class="pl-1">
           {{ time.allTimeDiff }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
+        Номер контракта:
+        <b class="pl-1">
+          {{ time.idContract }}
         </b>
       </v-row>
       <v-row class="mb-3">
@@ -80,18 +99,6 @@
           {{ time.checkManager }}
         </b>
       </v-row>
-      <v-row class="mb-3">
-        Подтверждено бухгалетром:
-        <b class="pl-1">
-          {{ time.checkAccountant }}
-        </b>
-      </v-row>
-      <v-row class="mb-3">
-        Выплачено:
-        <b class="pl-1">
-          {{ time.isPayment }}
-        </b>
-      </v-row>
     </div>
   </custom-dialog>
   <loader :value="isLoading"></loader>
@@ -101,8 +108,8 @@
 import "@/assets/styles/views/viewingTimeView.css";
 
 import formatDate from "@/helpers/formatDate";
-import StateMixins from "@/plugins/mixins/state";
-import MessageMixins from "@/plugins/mixins/messageView";
+import StateMixins from "@/mixins/state";
+import MessageMixins from "@/mixins/messageView";
 
 import Loader from "@/components/Loader.vue";
 import StateContainer from "@/components/StateContainer.vue";
@@ -116,6 +123,14 @@ export default {
   computed: {
     isAdmin() {
       return this.$store.getters.role == "Admin";
+    },
+
+    isManager() {
+      return this.$store.getters.role == "Manager";
+    },
+
+    isAccountant() {
+      return this.$store.getters.role == "Accountant";
     },
   },
 
@@ -153,15 +168,30 @@ export default {
       isLoading: false,
       isLoadingDialog: false,
       inDialog: false,
+      search: "",
       headers: [
         {
-          title: "Начало контракта",
+          title: "Номер времени",
+          align: "left",
+          key: "idTime",
+        },
+        {
+          title: "Номер контракта",
+          align: "left",
+          key: "idContract",
+        },
+        {
+          title: "Начало работы",
           align: "left",
           key: "startDate",
         },
         {
-          title: "Конец контракта",
+          title: "Конец работы",
           key: "endDate",
+        },
+        {
+          title: "Общее рабочее время дня",
+          key: "diffTime",
         },
         {
           title: "Общее количество часов",
@@ -175,35 +205,28 @@ export default {
           title: "Подтверждено менеджером",
           key: "checkManager",
         },
-        {
-          title: "Подтверждено бухгалтером",
-          key: "checkAccountant",
-        },
-        {
-          title: "Выплачено",
-          key: "isPayment",
-        },
       ],
       times: [
         {
+          idTime: "1",
+          idContract: "1",
           startDate: formatDate.convertDate(new Date()),
           endDate: formatDate.convertDate(new Date()),
+          diffTime: 4,
           allTime: 100,
           allTimeDiff: 96,
           checkManager: "OK",
-          checkAccountant: "NOT",
-          isPayment: "NOT",
         },
       ],
       time: {
-        idContract: '1',
+        idTime: "1",
+        idContract: "1",
         startDate: formatDate.convertDate(new Date()),
         endDate: formatDate.convertDate(new Date()),
+        diffTime: 4,
         allTime: 100,
         allTimeDiff: 96,
         checkManager: "OK",
-        checkAccountant: "NOT",
-        isPayment: "NOT",
         urlContract: "http://localhost:8080/Contract?idContract=1",
         chequeForOneHours: "700",
       },

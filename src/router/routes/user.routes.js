@@ -1,14 +1,13 @@
 import UserLayout from "@/layouts/UserLayout";
 import store from "@/store/index";
 
-import MainView from "@/views/user/MainView";
 import ViewingTimeView from "@/views/user/ViewingTimeView";
 import ContractView from "@/views/user/ContractView";
 
-import adminRoutes from "./admin.routes";
-import workerRoutes from "./worker.routes";
-import accountantRoutes from "./accountant.routes";
-import managerRoutes from "./manager.routes";
+import adminRoutes from "./routesForUser/admin.routes";
+import workerRoutes from "./routesForUser/worker.routes";
+import accountantRoutes from "./routesForUser/accountant.routes";
+import managerRoutes from "./routesForUser/manager.routes";
 
 const ifNotAuthenticated = (to, from, next) => {
   if (localStorage.getItem("vuex")) {
@@ -24,16 +23,6 @@ const ifNotAuthenticated = (to, from, next) => {
 };
 
 export default [
-  {
-    path: "/Main",
-    component: MainView,
-    name: "Main",
-    beforeEnter: ifNotAuthenticated,
-    meta: {
-      layout: UserLayout,
-      title: "Главная",
-    },
-  },
   {
     path: "/ViewingTime",
     component: ViewingTimeView,

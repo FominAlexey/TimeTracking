@@ -101,11 +101,6 @@ export default {
     return {
       itemsCommon: [
         {
-          title: "Главная",
-          icon: "mdi-alert-decagram",
-          to: "/Main",
-        },
-        {
           title: "Просмотр времени",
           icon: "mdi-file-search-outline",
           to: "/ViewingTime",

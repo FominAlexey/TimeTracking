@@ -1,12 +1,13 @@
-.viewingTime-headerTitle {
+.confirmationWork-headerTitle {
   display: flex;
   justify-content: space-between;
 }
-.viewingTime-container-selector {
+
+.confirmationWork-container-selector {
   text-align: start;
   display: flex;
 }
 
-.viewingTime-container-selector>div {
+.confirmationWork-container-selector>div {
   max-width: 380px;
 }

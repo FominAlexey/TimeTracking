@@ -4,9 +4,9 @@
   </v-container>
   <v-container
     class="viewingTime-container-selector pb-0"
-    v-if="users && isAdmin"
+    v-if="users && (isAdmin || isManager || isAccountant)"
   >
-    <h4 class="font-weight-medium text-h6 mt-5 mr-5">Сотрудник</h4>
+    <h4 class="font-weight-medium text-h6 mt-3 mr-5">Сотрудник</h4>
     <v-select
       :items="users"
       item-title="fullName"
@@ -21,7 +21,7 @@
       @update:modelValue="getContracts"
     >
     </v-select>
-    <div class="mt-5">
+    <div class="ml-2 mt-3" v-if="isAdmin">
       <v-btn
         class="editingEmployees-button"
         variant="elevated"
@@ -37,7 +37,7 @@
       :headers="headers"
       :items="contracts"
       :multiSort="true"
-      nameTable="Просмотр контракта"
+      nameTable="Контракты"
       v-on:getItemInfo="openContract"
     ></custom-table>
   </state-container>
@@ -51,6 +51,12 @@
       <loader :value="isLoadingDialog" :opacity="0" />
     </v-row>
     <div v-else>
+      <v-row class="mb-3" v-if="contract.isPayment">
+        Номер контракта:
+        <b class="pl-1">
+          {{ contract.idContract }}
+        </b>
+      </v-row>
       <v-row class="mb-3">
         Время начала:
         <b class="pl-1">
@@ -79,6 +85,7 @@
       <v-row class="mb-3 contract-input" v-if="!contract.isPayment">
         <div class="mt-6 mr-5">Описание:</div>
         <v-textarea
+          rows="1"
           v-model="contract.descriptionContract"
           variant="solo"
           density="compact"
@@ -99,6 +106,24 @@
         Описание:
         <b class="pl-1">
           {{ contract.descriptionContract }}
+        </b>
+      </v-row>
+      <v-row class="mb-3" v-if="contract.isPayment">
+        Всё рабочее время:
+        <a :href="contract.urlTime" target="_blank">
+          {{ contract.urlTime }}
+        </a>
+      </v-row>
+      <v-row class="mb-3" v-if="contract.isPayment">
+        Проверено менеджером:
+        <b class="pl-1">
+          {{ contract.isCheckManager }}
+        </b>
+      </v-row>
+      <v-row class="mb-3" v-if="contract.isPayment">
+        Проверено администратором:
+        <b class="pl-1">
+          {{ contract.isCheckAdmin }}
         </b>
       </v-row>
       <v-row class="mb-3" v-if="contract.isPayment">
@@ -129,8 +154,8 @@
 import "@/assets/styles/views/viewingTimeView.css";
 
 import formatDate from "@/helpers/formatDate";
-import StateMixins from "@/plugins/mixins/state";
-import MessageMixins from "@/plugins/mixins/messageView";
+import StateMixins from "@/mixins/state";
+import MessageMixins from "@/mixins/messageView";
 
 import Loader from "@/components/Loader.vue";
 import StateContainer from "@/components/StateContainer.vue";
@@ -144,6 +169,14 @@ export default {
   computed: {
     isAdmin() {
       return this.$store.getters.role == "Admin";
+    },
+
+    isManager() {
+      return this.$store.getters.role == "Manager";
+    },
+
+    isAccountant() {
+      return this.$store.getters.role == "Accountant";
     },
   },
 
@@ -208,6 +241,14 @@ export default {
           key: "allTimeDiff",
         },
         {
+          title: "Проверено менеджером",
+          key: "isCheckManager",
+        },
+        {
+          title: "Проверено администратором",
+          key: "isCheckAdmin",
+        },
+        {
           title: "Выплачено",
           key: "isPayment",
         },
@@ -219,6 +260,8 @@ export default {
           endDate: formatDate.convertDate(new Date()),
           allTime: 100,
           allTimeDiff: 96,
+          isCheckManager: "OK",
+          isCheckAdmin: "NOT",
           isPayment: "NOT",
         },
       ],
@@ -228,7 +271,10 @@ export default {
         endDate: formatDate.convertDate(new Date()),
         allTime: 100,
         allTimeDiff: 96,
+        isCheckManager: "OK",
+        isCheckAdmin: "NOT",
         isPayment: "NOT",
+        urlTime: "http://localhost:8080/ViewingTime?search=1",
         descriptionContract: "Описание",
         chequeForOneHours: "700",
       },
@@ -238,7 +284,10 @@ export default {
         endDate: formatDate.convertDate(new Date()),
         allTime: 100,
         allTimeDiff: 96,
+        isCheckManager: "OK",
+        isCheckAdmin: "NOT",
         isPayment: "NOT",
+        urlTime: "http://localhost:8080/ViewingTime?search=1",
         descriptionContract: "Описание",
         chequeForOneHours: "700",
       },
@@ -265,6 +314,9 @@ export default {
     },
 
     addContract() {
+      if (!this.user) {
+        return this.showMessage("Пользователь не выбран!");
+      }
       this.inDialog = true;
       this.contract = {
         idContract: null,
@@ -284,10 +336,10 @@ export default {
           allTime: 100,
           allTimeDiff: 96,
           isPayment: "NOT",
-        },);
+        });
         this.isLoadingDialog = false;
       }, 3000);
-    }
+    },
   },
 
   components: {
