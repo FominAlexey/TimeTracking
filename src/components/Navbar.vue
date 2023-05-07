@@ -66,7 +66,7 @@
           <v-list-item>
             <v-btn
               block
-              class="bg-blue-darken-2 navbar-button"
+              class="bg-blue-darken-2 navbar-button button-success"
               variant="elevated"
               @click="exit"
             >

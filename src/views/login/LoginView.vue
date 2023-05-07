@@ -1,7 +1,7 @@
 <template>
   <v-container class="login-view-container">
     <v-btn
-      class="login-button v-btn--size-x-large"
+      class="login-button button-success v-btn--size-x-large"
       variant="elevated"
       :loading="isLoading"
       @click="onLoginClicked"
@@ -48,7 +48,7 @@ export default {
         this.$store.dispatch("INIT_ACCOUNT", {
           fullName: "Aleksey",
           email: "Lekha@test.ru",
-          role: "Worker",
+          role: "Manager",
           id: "1",
         });
         this.$router.push("/ViewingTime");

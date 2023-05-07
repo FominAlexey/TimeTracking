@@ -1,0 +1,4 @@
+.button-success {
+  color: var(--text-color) !important;
+  background: var(--background-color) !important;
+}

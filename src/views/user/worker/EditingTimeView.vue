@@ -24,15 +24,35 @@
   </v-container>
   <v-container v-if="contract">
     <article>
-      <section>
+      <section class="text-h6">
         Посмотреть контракт:
         <a :href="contract.urlContract" target="_blank">
           {{ contract.nameContract }}
         </a>
+        <div>Время начала контракта: {{ contract.startDate }}</div>
+        <div>Время конца контракта: {{ contract.endDate }}</div>
+        <div>Оставшееся время контракта: {{ contract.allTimeDiff }}</div>
       </section>
-      <section>
-        Время на данный момент:
-        {{ timeNow }}
+      <section class="text-h6">
+        <div>Время на данный момент: {{ timeNow }}</div>
+        <v-btn
+          v-if="!timeToRequest"
+          class="button-success"
+          variant="elevated"
+          @click="goToWork"
+          >Начать работу</v-btn
+        >
+        <article v-if="timeToRequest">
+          <div>Время начала работы: {{ timeToRequest.timeNow }}</div>
+          <div>Время конца работы: {{ timeToRequest.timeEnd }}</div>
+          <v-btn
+            v-if="!timeToRequest.timeEnd"
+            class="button-success"
+            variant="elevated"
+            @click="endWork"
+            >Закончить работу</v-btn
+          >
+        </article>
       </section>
     </article>
   </v-container>
@@ -56,26 +76,18 @@ export default {
     setInterval(this.getTimeNow, 1000);
   },
 
+  mounted() {
+    this.getContracts();
+  },
+
   data() {
     return {
-      contracts: [
-        {
-          id: 1,
-          userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
-          nameContract: "Контракт 1",
-          urlContract: "http://localhost:8080/Contract?idContract=1",
-        },
-        {
-          id: 2,
-          userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c32",
-          nameContract: "Контракт 2",
-          urlContract: "http://localhost:8080/Contract?idContract=2",
-        },
-      ],
+      contracts: [],
       contract: null,
       isLoading: false,
       inDialog: false,
       timeNow: "",
+      timeToRequest: null,
     };
   },
 
@@ -83,29 +95,66 @@ export default {
     getTimeNow() {
       this.timeNow = formatDate.convertDate(new Date());
     },
+
     getContracts() {
-      // let userId = this.user ? this.user.id : this.$store.getters.id;
-      // this.isLoading = true;
-      // setTimeout(() => {
-      //   console.log(userId);
-      //   this.isLoading = false;
-      // }, 3000);
-    },
-
-    confirmForPayment() {
-      this.isLoadingDialog = true;
+      this.isLoading = true;
       setTimeout(() => {
-        this.contract.isCheckAdmin = "OK";
-        this.isLoadingDialog = false;
+        this.contracts = [
+          {
+            id: 1,
+            userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
+            nameContract: "Контракт 1",
+            startDate: formatDate.convertDate(new Date()),
+            endDate: formatDate.convertDate(new Date()),
+            allTime: 100,
+            allTimeDiff: 96,
+            urlContract: "http://localhost:8080/Contract?idContract=1",
+          },
+          {
+            id: 2,
+            userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c32",
+            nameContract: "Контракт 2",
+            startDate: formatDate.convertDate(new Date()),
+            endDate: formatDate.convertDate(new Date()),
+            allTime: 100,
+            allTimeDiff: 96,
+            urlContract: "http://localhost:8080/Contract?idContract=2",
+          },
+        ];
+        this.isLoading = false;
       }, 3000);
     },
 
-    cancelForPayment() {
-      this.isLoadingDialog = true;
+    getContract() {
+      this.isLoading = true;
       setTimeout(() => {
-        this.contract.isCheckAdmin = "NOT";
-        this.isLoadingDialog = false;
+        this.contract = {
+          id: 1,
+          userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
+          nameContract: "Контракт 1",
+          startDate: formatDate.convertDate(new Date()),
+          endDate: formatDate.convertDate(new Date()),
+          allTime: 100,
+          allTimeDiff: 96,
+          urlContract: "http://localhost:8080/Contract?idContract=1",
+        };
+
+        this.isLoading = false;
       }, 3000);
+    },
+
+    goToWork() {
+      this.timeToRequest = {
+        id: 1,
+        userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
+        timeNow: this.timeNow,
+        timeEnd: null,
+      };
+    },
+
+    endWork() {
+      this.timeToRequest.timeEnd = this.timeNow;
+      console.log(this.timeToRequest);
     },
   },
 

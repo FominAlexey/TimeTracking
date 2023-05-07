@@ -20,8 +20,6 @@
 	justify-self: center;
 	align-self: center;
 	width: 150px;
-  color: var(--text-color) !important;
-  background: var(--background-color) !important;
 }
 
 .login-input-container {
