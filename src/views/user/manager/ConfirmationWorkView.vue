@@ -104,7 +104,7 @@
       </v-row>
       <v-row class="mb-3" justify="center" v-if="time.isCheckManager != 'OK'">
         <v-btn
-          class="bg-blue-darken-2"
+          class="button-success"
           variant="elevated"
           @click="confirmWork"
           :loading="isLoadingDialog"
@@ -113,7 +113,7 @@
       </v-row>
       <v-row class="mb-3" justify="center" v-if="time.isCheckManager != 'NOT'">
         <v-btn
-          class="bg-blue-darken-2"
+          class="button-success"
           variant="elevated"
           @click="cancelWork"
           :loading="isLoadingDialog"

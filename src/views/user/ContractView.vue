@@ -150,7 +150,7 @@
       </v-row>
       <v-row class="mb-3" justify="center" v-if="!contract.isPayment">
         <v-btn
-          class="bg-blue-darken-2"
+          class="button-success"
           variant="elevated"
           @click="addContractForUser"
           :loading="isLoadingDialog"

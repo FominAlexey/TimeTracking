@@ -123,7 +123,7 @@
       </v-row>
       <v-row class="mb-3" justify="center" v-if="!worker.contracts">
         <v-btn
-          class="bg-blue-darken-2"
+          class="button-success"
           variant="elevated"
           @click="addWorkerToCompany"
           :loading="isLoadingDialog"
@@ -150,7 +150,7 @@
         v-if="isEditWorker && worker.contracts"
       >
         <v-btn
-          class="bg-blue-darken-2"
+          class="button-success"
           variant="elevated"
           @click="editWorker"
           :loading="isLoadingDialog"

@@ -117,7 +117,7 @@
         v-if="contract.isCheckManager == 'OK' && contract.isCheckAdmin != 'OK'"
       >
         <v-btn
-          class="bg-blue-darken-2"
+          class="button-success"
           variant="elevated"
           @click="confirmForPayment"
           :loading="isLoadingDialog"
@@ -130,7 +130,7 @@
         v-if="contract.isPayment == 'NOT' && contract.isCheckAdmin == 'OK'"
       >
         <v-btn
-          class="bg-blue-darken-2"
+          class="button-success"
           variant="elevated"
           @click="cancelForPayment"
           :loading="isLoadingDialog"

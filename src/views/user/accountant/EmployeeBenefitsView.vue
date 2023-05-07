@@ -136,7 +136,7 @@
         "
       >
         <v-btn
-          class="bg-blue-darken-2"
+          class="button-success"
           variant="elevated"
           @click="paymentForUser"
           :loading="isLoadingDialog"
