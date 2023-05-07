@@ -81,6 +81,12 @@
         </b>
       </v-row>
       <v-row class="mb-3">
+          Название контракта:
+          <b class="pl-1">
+            {{ time.nameContract }}
+          </b>
+        </v-row>
+      <v-row class="mb-3">
         Ссылка на контракт:
         <a :href="time.urlContract" target="_blank">
           {{ time.urlContract }}
@@ -180,6 +186,11 @@ export default {
           align: "left",
           key: "idContract",
         },
+         {
+          title: "Название контракта",
+          align: "left",
+          key: "nameContract",
+        },
         {
           title: "Начало работы",
           align: "left",
@@ -210,6 +221,7 @@ export default {
         {
           idTime: "1",
           idContract: "1",
+          nameContract: "Контракт 1",
           startDate: formatDate.convertDate(new Date()),
           endDate: formatDate.convertDate(new Date()),
           diffTime: 4,
@@ -221,6 +233,7 @@ export default {
       time: {
         idTime: "1",
         idContract: "1",
+        nameContract: "Контракт 1",
         startDate: formatDate.convertDate(new Date()),
         endDate: formatDate.convertDate(new Date()),
         diffTime: 4,

@@ -48,7 +48,7 @@ export default {
         this.$store.dispatch("INIT_ACCOUNT", {
           fullName: "Aleksey",
           email: "Lekha@test.ru",
-          role: "Accountant",
+          role: "Worker",
           id: "1",
         });
         this.$router.push("/ViewingTime");

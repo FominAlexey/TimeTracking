@@ -54,6 +54,18 @@
           {{ contract.idContract }}
         </b>
       </v-row>
+      <v-row class="mb-3" v-if="contract.isPayment">
+        Название контракта:
+        <b class="pl-1">
+          {{ contract.nameContract }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
+        Посмотреть контракт:
+        <a :href="contract.urlContract" target="_blank">
+          {{ contract.urlContract }}
+        </a>
+      </v-row>
       <v-row class="mb-3">
         Время начала:
         <b class="pl-1">
@@ -153,9 +165,6 @@ export default {
   mixins: [StateMixins, MessageMixins],
 
   mounted() {
-    if (this.isAdmin) {
-      this.getUsers();
-    }
     if (this.$route.query.idContract) {
       this.openContract({ id: this.$route.query.idContract });
       this.$router.replace({ idContract: null });
@@ -197,6 +206,11 @@ export default {
           key: "idContract",
         },
         {
+          title: "Название контракта",
+          align: "left",
+          key: "nameContract",
+        },
+        {
           title: "Начало контракта",
           key: "startDate",
         },
@@ -228,6 +242,7 @@ export default {
       contracts: [
         {
           idContract: "1",
+          nameContract: "Контракт 1",
           startDate: formatDate.convertDate(new Date()),
           endDate: formatDate.convertDate(new Date()),
           allTime: 100,
@@ -239,6 +254,8 @@ export default {
       ],
       contract: {
         idContract: "1",
+        nameContract: "Контракт 1",
+        urlContract: "http://localhost:8080/Contract?idContract=1",
         startDate: formatDate.convertDate(new Date()),
         endDate: formatDate.convertDate(new Date()),
         allTime: 100,

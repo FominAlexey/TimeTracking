@@ -2,10 +2,7 @@
   <v-container>
     <h2 class="text-h5 pb-0">Подтверждение работы</h2>
   </v-container>
-  <v-container
-    class="confirmationWork-container-selector pb-0"
-    v-if="users"
-  >
+  <v-container class="confirmationWork-container-selector pb-0" v-if="users">
     <h4 class="font-weight-medium text-h6 mt-3 mr-5">Сотрудник</h4>
     <v-select
       :items="users"
@@ -81,6 +78,12 @@
         </b>
       </v-row>
       <v-row class="mb-3">
+        Название контракта:
+        <b class="pl-1">
+          {{ time.nameContract }}
+        </b>
+      </v-row>
+      <v-row class="mb-3">
         Ссылка на контракт:
         <a :href="time.urlContract" target="_blank">
           {{ time.urlContract }}
@@ -138,12 +141,6 @@ import Table from "@/components/Table.vue";
 export default {
   mixins: [StateMixins, MessageMixins],
 
-  mounted() {
-    if (this.isAdmin) {
-      this.getUsers();
-    }
-  },
-
   data() {
     return {
       users: [
@@ -185,6 +182,11 @@ export default {
           key: "idContract",
         },
         {
+          title: "Название контракта",
+          align: "left",
+          key: "nameContract",
+        },
+        {
           title: "Начало работы",
           align: "left",
           key: "startDate",
@@ -214,6 +216,7 @@ export default {
         {
           idTime: "1",
           idContract: "1",
+          nameContract: "Контракт 1",
           startDate: formatDate.convertDate(new Date()),
           endDate: formatDate.convertDate(new Date()),
           diffTime: 4,
@@ -225,6 +228,7 @@ export default {
       time: {
         idTime: "1",
         idContract: "1",
+        nameContract: "Контракт 1",
         startDate: formatDate.convertDate(new Date()),
         endDate: formatDate.convertDate(new Date()),
         diffTime: 4,

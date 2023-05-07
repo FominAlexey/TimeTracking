@@ -57,6 +57,12 @@
           {{ contract.idContract }}
         </b>
       </v-row>
+      <v-row class="mb-3" v-if="contract.isPayment">
+        Название контракта:
+        <b class="pl-1">
+          {{ contract.nameContract }}
+        </b>
+      </v-row>
       <v-row class="mb-3">
         Время начала:
         <b class="pl-1">
@@ -83,7 +89,17 @@
       </v-row>
 
       <v-row class="mb-3 contract-input" v-if="!contract.isPayment">
-        <div class="mt-6 mr-5">Описание:</div>
+        <div class="mt-2 mr-5">Название контракта:</div>
+        <v-textarea
+          rows="1"
+          v-model="contract.nameContract"
+          variant="solo"
+          density="compact"
+          clearable
+        ></v-textarea>
+      </v-row>
+      <v-row class="mb-3 contract-input" v-if="!contract.isPayment">
+        <div class="mt-2 mr-5">Описание:</div>
         <v-textarea
           rows="1"
           v-model="contract.descriptionContract"
@@ -93,7 +109,7 @@
         ></v-textarea>
       </v-row>
       <v-row class="mb-3 contract-input" v-if="!contract.isPayment">
-        <div class="mt-6 mr-5">Оплата за час работы:</div>
+        <div class="mt-2 mr-5">Оплата за час работы:</div>
         <v-text-field
           v-model="contract.chequeForOneHours"
           variant="solo"
@@ -225,6 +241,11 @@ export default {
           key: "idContract",
         },
         {
+          title: "Название контракта",
+          align: "left",
+          key: "nameContract",
+        },
+        {
           title: "Начало контракта",
           key: "startDate",
         },
@@ -256,6 +277,7 @@ export default {
       contracts: [
         {
           idContract: "1",
+          nameContract: "Контракт 1",
           startDate: formatDate.convertDate(new Date()),
           endDate: formatDate.convertDate(new Date()),
           allTime: 100,
@@ -267,6 +289,7 @@ export default {
       ],
       contract: {
         idContract: "1",
+        nameContract: "Контракт 1",
         startDate: formatDate.convertDate(new Date()),
         endDate: formatDate.convertDate(new Date()),
         allTime: 100,
@@ -280,6 +303,7 @@ export default {
       },
       testContract: {
         idContract: "1",
+        nameContract: "Контракт 1",
         startDate: formatDate.convertDate(new Date()),
         endDate: formatDate.convertDate(new Date()),
         allTime: 100,

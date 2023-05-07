@@ -244,6 +244,11 @@ export default {
           key: "idContract",
         },
         {
+          title: "Название контракта",
+          align: "left",
+          key: "nameContract",
+        },
+        {
           title: "Начало контракта",
           key: "startDate",
         },
@@ -264,6 +269,7 @@ export default {
         contracts: [
           {
             idContract: "1",
+            nameContract: "Контракт 1",
             startDate: formatDate.convertDate(new Date()),
             endDate: formatDate.convertDate(new Date()),
           },
