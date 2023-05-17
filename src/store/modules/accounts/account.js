@@ -21,6 +21,9 @@ const state = {
   role: null,
   userAddress: null,
   id: null,
+  numberPhone: null,
+  startTimeWork: null,
+  paymentOnHour: null,
 };
 
 const getters = {
@@ -31,6 +34,9 @@ const getters = {
   role: (state) => state.role,
   userAddress: (state) => state.userAddress,
   id: (state) => state.id,
+  numberPhone: (state) => state.numberPhone,
+  startTimeWork: (state) => state.startTimeWork,
+  paymentOnHour: (state) => state.paymentOnHour,
 };
 
 const actions = {
@@ -46,10 +52,14 @@ const actions = {
     if (userData) {
       context.commit(SET_DATA_ACCOUNT, {
         isAuthorized: true,
+        id: userData.id,
+        addressWallet: userData.addressWallet,
         fullName: userData.fullName,
         email: userData.email,
         role: userData.role,
-        id: userData.id,
+        numberPhone: userData.numberPhone,
+        startTimeWork: userData.startTimeWork,
+        paymentOnHour: userData.paymentOnHour,
       });
       context.commit(SET_INIT);
     }
@@ -65,6 +75,9 @@ const actions = {
       role: dataAccountVuex.role,
       userAddress: dataAccountVuex.userAddress,
       id: dataAccountVuex.id,
+      numberPhone: dataAccountVuex.numberPhone,
+      startTimeWork: dataAccountVuex.startTimeWork,
+      paymentOnHour: dataAccountVuex.paymentOnHour,
     };
     context.commit(SET_DATA_ACCOUNT_VUEX, stateAccountVuex);
   },
@@ -78,16 +91,34 @@ const mutations = {
     state.email = null;
     state.role = null;
     state.id = null;
+    state.numberPhone = null;
+    state.startTimeWork = null;
+    state.paymentOnHour = null;
   },
   [SET_USER_ADDRESS](state, userAddress) {
     state.userAddress = userAddress;
   },
-  [SET_DATA_ACCOUNT](state, { isAuthorized, fullName, email, role, id }) {
+  [SET_DATA_ACCOUNT](
+    state,
+    {
+      isAuthorized,
+      fullName,
+      email,
+      role,
+      id,
+      numberPhone,
+      startTimeWork,
+      paymentOnHour,
+    }
+  ) {
     state.isAuthorized = isAuthorized;
     state.fullName = fullName;
     state.email = email;
     state.role = role;
     state.id = id;
+    state.numberPhone = numberPhone;
+    state.startTimeWork = startTimeWork;
+    state.paymentOnHour = paymentOnHour;
   },
   [SET_DATA_ACCOUNT_VUEX](state, vuexData) {
     state.isInitialized = vuexData.isInitialized;
@@ -97,6 +128,9 @@ const mutations = {
     state.role = vuexData.role;
     state.userAddress = vuexData.userAddress;
     state.id = vuexData.id;
+    state.numberPhone = vuexData.numberPhone;
+    state.startTimeWork = vuexData.startTimeWork;
+    state.paymentOnHour = vuexData.paymentOnHour;
   },
 
   [SET_INIT](state) {

@@ -7,6 +7,7 @@
       contained
       class="align-center justify-center"
       scrim="#FFFFFF"
+      persistent
     >
       <v-progress-circular indeterminate color="#fd1d1d" size="64" />
     </v-overlay>

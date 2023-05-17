@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h2 class="text-h5 pb-0">Редактирование оплаты</h2>
+    <h2 class="text-h5 pb-0">Отслеживание работы</h2>
   </v-container>
   <v-container
     class="confirmationPayment-container-selector pb-0"

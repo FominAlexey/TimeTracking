@@ -23,7 +23,7 @@
   <custom-dialog
     v-model:value="inDialog"
     width="auto"
-    minWidth="250"
+    minWidth="300"
     class="pl-0 pr-0"
   >
     <v-row class="mb-10" v-if="isLoadingDialog" justify="center">
@@ -33,7 +33,7 @@
       <v-row class="mb-3 editingEmployees-input">
         <div class="mt-3 mr-5">Адрес кошелька:</div>
         <v-text-field
-          v-model="worker.userAddressWallet"
+          v-model="worker.addressWallet"
           variant="solo"
           density="compact"
           placeholder="Адрес кошелька"
@@ -67,7 +67,7 @@
       <v-row class="mb-3 editingEmployees-input">
         <div class="mt-3 mr-5">Телефон:</div>
         <v-text-field
-          v-model="worker.phone"
+          v-model="worker.numberPhone"
           variant="solo"
           density="compact"
           placeholder="Телефон"
@@ -91,19 +91,19 @@
       <v-row class="mb-3 editingEmployees-input">
         Начало работы:
         <b class="pl-1">
-          {{ worker.startDate }}
+          {{ formatDate.convertDate(new Date(worker.startTimeWork)) }}
         </b>
       </v-row>
       <v-row class="mb-3" v-if="worker.endDate">
-        Конец работы:
-        <b class="pl-1">
-          {{ worker.endDate }}
-        </b>
-      </v-row>
+          Конец работы:
+          <b class="pl-1">
+            {{ formatDate.convertDate(new Date( worker.endDate)) }}
+          </b>
+        </v-row>
       <v-row class="mb-3 editingEmployees-input">
         <div class="mt-3 mr-5">Оплата за час работы:</div>
         <v-text-field
-          v-model="worker.chequeForOneHours"
+          v-model="worker.paymentOnHour"
           density="compact"
           variant="solo"
           clearable
@@ -111,7 +111,7 @@
         ></v-text-field>
         <div class="ml-2 mt-3">руб.</div>
       </v-row>
-      <v-row class="mb-3" v-if="worker.contracts">
+      <v-row class="mb-3" v-if="!isNewWorker">
         Контракты:
         <custom-table
           class="pt-5"
@@ -121,7 +121,7 @@
           v-on:getItemInfo="openContract"
         ></custom-table>
       </v-row>
-      <v-row class="mb-3" justify="center" v-if="!worker.contracts">
+      <v-row class="mb-3" justify="center" v-if="isNewWorker">
         <v-btn
           class="button-success"
           variant="elevated"
@@ -130,25 +130,21 @@
           :disabled="
             worker.fullName == null ||
             worker.email == null ||
-            worker.phone == null ||
+            worker.numberPhone == null ||
             worker.role == null ||
-            worker.chequeForOneHours == null
+            worker.paymentOnHour == null
           "
           >Добавить пользователя</v-btn
         >
       </v-row>
-      <v-row v-if="worker.contracts">
+      <v-row v-if="!isNewWorker">
         <v-radio-group v-model="isEditWorker" inline>
           <div class="mt-2">Изменить данные:</div>
           <v-radio label="Вкл" :value="true"></v-radio>
           <v-radio label="Выкл" :value="false"></v-radio>
         </v-radio-group>
       </v-row>
-      <v-row
-        class="mb-3"
-        justify="center"
-        v-if="isEditWorker && worker.contracts"
-      >
+      <v-row class="mb-3" justify="center" v-if="isEditWorker && !isNewWorker">
         <v-btn
           class="button-success"
           variant="elevated"
@@ -157,11 +153,20 @@
           :disabled="
             worker.fullName == null ||
             worker.email == null ||
-            worker.phone == null ||
+            worker.numberPhone == null ||
             worker.role == null ||
-            worker.chequeForOneHours == null
+            worker.paymentOnHour == null
           "
           >Изменить данные</v-btn
+        >
+      </v-row>
+      <v-row class="mb-3" justify="center" v-if="isEditWorker && !isNewWorker">
+        <v-btn
+          class="button-success"
+          variant="elevated"
+          @click="deleteWorker"
+          :loading="isLoadingDialog"
+          >Удалить сотрудника</v-btn
         >
       </v-row>
     </div>
@@ -176,6 +181,14 @@ import formatDate from "@/helpers/formatDate";
 import StateMixins from "@/mixins/state";
 import MessageMixins from "@/mixins/messageView";
 import userConsts from "@/store/consts/user";
+import UserObject from "@/store/objects/user/UserObject";
+import {
+  getUsers,
+  createUser,
+  deleteUser,
+  getUserInContracts,
+  putUser
+} from "@/dataBase/gunDB/users";
 
 import Loader from "@/components/Loader.vue";
 import StateContainer from "@/components/StateContainer.vue";
@@ -186,13 +199,19 @@ import Table from "@/components/Table.vue";
 export default {
   mixins: [StateMixins, MessageMixins],
 
+  mounted() {
+    this.getWorkers();
+  },
+
   data() {
     return {
       isLoading: false,
       isLoadingDialog: false,
       inDialog: false,
       isEditWorker: false,
+      isNewWorker: false,
       rolesUsers: userConsts.roles,
+      formatDate: formatDate,
       headers: [
         {
           title: "Ф.И.О",
@@ -207,41 +226,14 @@ export default {
           title: "Должность",
           key: "role",
         },
-        {
-          title: "Время работы",
-          key: "timeWorker",
-        },
       ],
-      workers: [
-        {
-          fullName: "Фомин Алексей Вадимович",
-          email: "Lekha@test.ru",
-          role: "Admin",
-          timeWorker: 100,
-        },
-      ],
-      worker: {
-        userAddressWallet: "123123312132321132312",
-        fullName: "Фомин Алексей Вадимович",
-        email: "Lekha@test.ru",
-        phone: "+5454354353",
-        role: "Admin",
-        startDate: formatDate.convertDate(new Date()),
-        endDate: formatDate.convertDate(new Date()),
-        chequeForOneHours: "700",
-        contracts: [
-          {
-            idContract: "1",
-            startDate: formatDate.convertDate(new Date()),
-            endDate: formatDate.convertDate(new Date()),
-          },
-        ],
-      },
+      workers: [],
+      worker: new UserObject(),
       headersContract: [
         {
           title: "Номер контракта",
           align: "left",
-          key: "idContract",
+          key: "id",
         },
         {
           title: "Название контракта",
@@ -258,14 +250,13 @@ export default {
         },
       ],
       testWorker: {
-        userAddressWallet: "123123312132321132312",
+        addressWallet: "123123312132321132312",
         fullName: "Фомин Алексей Вадимович",
         email: "Lekha@test.ru",
-        phone: "+5454354353",
+        numberPhone: "+5454354353",
         role: "Admin",
-        startDate: formatDate.convertDate(new Date()),
-        endDate: formatDate.convertDate(new Date()),
-        chequeForOneHours: "700",
+        startTimeWork: formatDate.convertDate(new Date()),
+        paymentOnHour: "700",
         contracts: [
           {
             idContract: "1",
@@ -279,48 +270,67 @@ export default {
   },
 
   methods: {
-    getWorkers() {},
-
     openWorker(item) {
       this.inDialog = true;
-      this.worker = this.testWorker;
+      this.isNewWorker = false;
+      const user = getUserInContracts(item.id);
+      this.worker = user;
     },
 
     openContract(item) {
+      console.log("🚀 ~ file: EditingEmployeesView.vue:275 ~ openContract ~ item:", item)
       this.$router.push({
         path: "/Contract",
-        query: { idContract: item.idContract },
+        query: { idContract: item.id },
       });
     },
 
     addWorker() {
       this.inDialog = true;
       this.isEditWorker = true;
-      this.worker = {
-        userAddressWallet: null,
-        fullName: null,
-        email: null,
-        phone: null,
-        role: null,
-        startDate: formatDate.convertDate(new Date()),
-        chequeForOneHours: "700",
-      };
+      this.isNewWorker = true;
+      this.worker = new UserObject().toNewUser();
     },
 
     addWorkerToCompany() {
       this.isLoadingDialog = true;
+      createUser(this.worker);
+      this.getWorkers();
       setTimeout(() => {
-        this.workers.push({
-          fullName: this.worker.fullName,
-          email: this.worker.email,
-          role: this.worker.role,
-          timeWorker: 100,
-        });
         this.isLoadingDialog = false;
-      }, 3000);
+        this.inDialog = false;
+      }, 2000);
     },
 
-    editWorker() {},
+    getWorkers() {
+      this.isLoading = true;
+      const workers = getUsers();
+      setTimeout(() => {
+        this.workers = workers;
+        this.isLoading = false;
+      }, 2000);
+    },
+
+    editWorker() {
+      this.isLoadingDialog = true;
+      putUser(this.worker);
+      this.getWorkers();
+      setTimeout(() => {
+        this.isLoadingDialog = false;
+        this.inDialog = false;
+      }, 2000);
+    },
+
+    deleteWorker() {
+      this.isLoadingDialog = true;
+      let response = deleteUser(this.worker.id.toString());
+      this.showMessage(response);
+      this.getWorkers();
+      setTimeout(() => {
+        this.isLoadingDialog = false;
+        this.inDialog = false;
+      }, 3000);
+    },
   },
 
   components: {

@@ -4,7 +4,7 @@
       class="login-button button-success v-btn--size-x-large"
       variant="elevated"
       :loading="isLoading"
-      @click="onLoginClicked"
+      @click="onLoginClicked()"
     >
       Войти
     </v-btn>
@@ -13,8 +13,8 @@
 </template>
 <script>
 import "@/assets/styles/views/loginView.css";
-//import ApiService from "@/services/api/api";
 //import store from "@/store/index";
+import { getUsers } from "@/dataBase/gunDB/users";
 import MessageMixins from "@/mixins/messageView";
 import Snackbar from "@/components/SnackBar.vue";
 
@@ -24,8 +24,10 @@ export default {
   data() {
     return {
       isLoading: null,
+      user: null,
     };
   },
+
   methods: {
     async onLoginClicked() {
       if (!window.ethereum) {
@@ -45,13 +47,29 @@ export default {
       console.log(`Пользователь имеет адрес ${accounts[0]}`);
       this.isLoading = false;
       if (accounts[0]) {
-        this.$store.dispatch("INIT_ACCOUNT", {
-          fullName: "Aleksey",
-          email: "Lekha@test.ru",
-          role: "Manager",
-          id: "1",
-        });
-        this.$router.push("/ViewingTime");
+        let users = getUsers();
+        console.log("🚀 ~ file: LoginView.vue:51 ~ onLoginClicked ~ users:", users)
+        setTimeout(() => {
+          this.user = users.find((user) => user.addressWallet == accounts[0]);
+          if (this.user) {
+            console.log(this.user);
+            this.$store.dispatch("INIT_ACCOUNT", {
+              id: this.user.id,
+              addressWallet: this.user.addressWallet,
+              fullName: this.user.fullName,
+              email: this.user.email,
+              role: this.user.role,
+              numberPhone: this.user.numberPhone,
+              startTimeWork: this.user.startTimeWork,
+              paymentOnHour: this.user.paymentOnHour,
+            });
+            this.$router.push("/ViewingTime");
+          } else {
+            this.showMessage(
+              `Пользователя с таким адрессом не найден: ${accounts[0]}`
+            );
+          }
+        }, 1000);
       }
     },
   },

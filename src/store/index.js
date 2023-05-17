@@ -23,6 +23,9 @@ export default createStore({
               role: vuexState.AccountModule.role,
               userAddress: vuexState.AccountModule.userAddress,
               id: vuexState.AccountModule.id,
+              numberPhone: vuexState.AccountModule.numberPhone,
+              startTimeWork: vuexState.AccountModule.startTimeWork,
+              paymentOnHour: vuexState.AccountModule.paymentOnHour,
             },
             SettingsModule: {
               userId: vuexState.SettingsModule.userId,
