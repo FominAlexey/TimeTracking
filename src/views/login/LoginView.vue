@@ -48,11 +48,9 @@ export default {
       this.isLoading = false;
       if (accounts[0]) {
         let users = getUsers();
-        console.log("🚀 ~ file: LoginView.vue:51 ~ onLoginClicked ~ users:", users)
         setTimeout(() => {
           this.user = users.find((user) => user.addressWallet == accounts[0]);
           if (this.user) {
-            console.log(this.user);
             this.$store.dispatch("INIT_ACCOUNT", {
               id: this.user.id,
               addressWallet: this.user.addressWallet,

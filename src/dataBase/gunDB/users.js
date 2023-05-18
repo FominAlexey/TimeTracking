@@ -32,6 +32,8 @@ export function getUsers() {
       users.push(data);
     }
   });
+
+  users = [...new Set(users)];
   return users;
 }
 

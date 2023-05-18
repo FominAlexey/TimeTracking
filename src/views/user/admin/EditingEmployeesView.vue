@@ -34,6 +34,7 @@
         <div class="mt-3 mr-5">Адрес кошелька:</div>
         <v-text-field
           v-model="worker.addressWallet"
+          width="auto"
           variant="solo"
           density="compact"
           placeholder="Адрес кошелька"
@@ -95,11 +96,11 @@
         </b>
       </v-row>
       <v-row class="mb-3" v-if="worker.endDate">
-          Конец работы:
-          <b class="pl-1">
-            {{ formatDate.convertDate(new Date( worker.endDate)) }}
-          </b>
-        </v-row>
+        Конец работы:
+        <b class="pl-1">
+          {{ formatDate.convertDate(new Date(worker.endDate)) }}
+        </b>
+      </v-row>
       <v-row class="mb-3 editingEmployees-input">
         <div class="mt-3 mr-5">Оплата за час работы:</div>
         <v-text-field
@@ -182,19 +183,20 @@ import StateMixins from "@/mixins/state";
 import MessageMixins from "@/mixins/messageView";
 import userConsts from "@/store/consts/user";
 import UserObject from "@/store/objects/user/UserObject";
-import {
-  getUsers,
-  createUser,
-  deleteUser,
-  getUserInContracts,
-  putUser
-} from "@/dataBase/gunDB/users";
 
 import Loader from "@/components/Loader.vue";
 import StateContainer from "@/components/StateContainer.vue";
 import Snackbar from "@/components/SnackBar.vue";
 import Dialog from "@/components/Dialog.vue";
 import Table from "@/components/Table.vue";
+
+import {
+  getUsers,
+  createUser,
+  deleteUser,
+  getUserInContracts,
+  putUser,
+} from "@/dataBase/gunDB/users";
 
 export default {
   mixins: [StateMixins, MessageMixins],
@@ -249,23 +251,6 @@ export default {
           key: "endDate",
         },
       ],
-      testWorker: {
-        addressWallet: "123123312132321132312",
-        fullName: "Фомин Алексей Вадимович",
-        email: "Lekha@test.ru",
-        numberPhone: "+5454354353",
-        role: "Admin",
-        startTimeWork: formatDate.convertDate(new Date()),
-        paymentOnHour: "700",
-        contracts: [
-          {
-            idContract: "1",
-            nameContract: "Контракт 1",
-            startDate: formatDate.convertDate(new Date()),
-            endDate: formatDate.convertDate(new Date()),
-          },
-        ],
-      },
     };
   },
 
@@ -273,12 +258,16 @@ export default {
     openWorker(item) {
       this.inDialog = true;
       this.isNewWorker = false;
+      this.isEditWorker = false;
       const user = getUserInContracts(item.id);
-      this.worker = user;
+      this.worker = JSON.parse(JSON.stringify(user));
+      this.worker.contracts.forEach((element) => {
+        element.startDate = formatDate.convertDate(new Date(element.startDate));
+        element.endDate = formatDate.convertDate(new Date(element.endDate));
+      });
     },
 
     openContract(item) {
-      console.log("🚀 ~ file: EditingEmployeesView.vue:275 ~ openContract ~ item:", item)
       this.$router.push({
         path: "/Contract",
         query: { idContract: item.id },
@@ -306,9 +295,14 @@ export default {
       this.isLoading = true;
       const workers = getUsers();
       setTimeout(() => {
-        this.workers = workers;
+        this.workers = JSON.parse(JSON.stringify(workers));
+        this.workers.forEach((element) => {
+          element.role = this.rolesUsers.find(
+            (status) => status.value == this.$store.getters.role
+          ).title;
+        });
         this.isLoading = false;
-      }, 2000);
+      }, 3000);
     },
 
     editWorker() {

@@ -153,7 +153,6 @@ export default {
       }
     },
     customFilter(value, search, item) {
-      console.log("🚀 ~ file: Table.vue:156 ~ customFilter ~ search:", search)
       if (value == null) return false;
       return (
         value.toString().toLocaleLowerCase().indexOf(search.toLowerCase()) !==

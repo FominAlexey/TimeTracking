@@ -41,7 +41,7 @@
       <v-row class="mb-3">
         Номер контракта:
         <b class="pl-1">
-          {{ contract.idContract }}
+          {{ contract.id }}
         </b>
       </v-row>
       <v-row class="mb-3">
@@ -53,25 +53,25 @@
       <v-row class="mb-3">
         Время начала:
         <b class="pl-1">
-          {{ contract.startDate }}
+          {{ formatDate.convertDate(new Date(contract.startDate)) }}
         </b>
       </v-row>
       <v-row class="mb-3">
         Время конца:
         <b class="pl-1">
-          {{ contract.endDate }}
+          {{ formatDate.convertDate(new Date(contract.endDate)) }}
         </b>
       </v-row>
       <v-row class="mb-3">
         Общее количество часов работы:
         <b class="pl-1">
-          {{ contract.allTime }}
+          {{ contract.allTimeWork }}
         </b>
       </v-row>
       <v-row class="mb-3">
         Общее оставшихся часов:
         <b class="pl-1">
-          {{ contract.allTimeDiff }}
+          {{ contract.allRemainTime }}
         </b>
       </v-row>
 
@@ -84,7 +84,7 @@
       <v-row class="mb-3 contract-input">
         Оплата за час работы:
         <b class="pl-1">
-          {{ contract.chequeForOneHours }}
+          {{ contract.paymentOnHour }}
         </b>
       </v-row>
       <v-row class="mb-3">
@@ -96,25 +96,25 @@
       <v-row class="mb-3">
         Проверено менеджером:
         <b class="pl-1">
-          {{ contract.isCheckManager }}
+          {{ contract.isCheckManager ? "Да" : "Нет" }}
         </b>
       </v-row>
       <v-row class="mb-3">
         Проверено администратором:
         <b class="pl-1">
-          {{ contract.isCheckAdmin }}
+          {{ contract.isCheckAdmin ? "Да" : "Нет" }}
         </b>
       </v-row>
       <v-row class="mb-3">
         Выплачено:
         <b class="pl-1">
-          {{ contract.isPayment }}
+          {{ contract.isPayment ? "Да" : "Нет" }}
         </b>
       </v-row>
       <v-row
         class="mb-3"
         justify="center"
-        v-if="contract.isCheckManager == 'OK' && contract.isCheckAdmin != 'OK'"
+        v-if="contract.isCheckManager == true && contract.isCheckAdmin != true"
       >
         <v-btn
           class="button-success"
@@ -127,7 +127,7 @@
       <v-row
         class="mb-3"
         justify="center"
-        v-if="contract.isPayment == 'NOT' && contract.isCheckAdmin == 'OK'"
+        v-if="contract.isPayment == false && contract.isCheckAdmin == true"
       >
         <v-btn
           class="button-success"
@@ -145,7 +145,7 @@
 <script>
 import "@/assets/styles/views/admin/confirmationPaymentView.css";
 
-import formatDate from "@/helpers/formatDate";
+//import formatDate from "@/helpers/formatDate";
 import StateMixins from "@/mixins/state";
 import MessageMixins from "@/mixins/messageView";
 
@@ -154,6 +154,15 @@ import StateContainer from "@/components/StateContainer.vue";
 import Snackbar from "@/components/SnackBar.vue";
 import Dialog from "@/components/Dialog.vue";
 import Table from "@/components/Table.vue";
+import ContractObject from "@/store/objects/contracts/ContractObject";
+
+import { getUsers } from "@/dataBase/gunDB/users";
+import {
+  getContracts,
+  getContract,
+  putContract,
+} from "@/dataBase/gunDB/contracts";
+import formatDate from "@/helpers/formatDate";
 
 export default {
   mixins: [StateMixins, MessageMixins],
@@ -163,41 +172,23 @@ export default {
       this.openContract({ id: this.$route.query.idContract });
       this.$router.replace({ idContract: null });
     }
+    this.getUsers();
+    this.getContracts();
   },
 
   data() {
     return {
-      users: [
-        {
-          id: 1,
-          userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
-          email: "Lekha@test.ru",
-          fullName: "Aleksey",
-          role: "Admin",
-        },
-        {
-          id: 2,
-          userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c32",
-          email: "Vlad@test.ru",
-          fullName: "Vladislav",
-          role: "Worker",
-        },
-      ],
-      user: {
-        id: 1,
-        userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
-        email: "Lekha@test.ru",
-        fullName: "Aleksey",
-        role: "Admin",
-      },
+      users: [],
+      user: {},
       isLoading: false,
       isLoadingDialog: false,
       inDialog: false,
+      formatDate: formatDate,
       headers: [
         {
           title: "Номер контракта",
           align: "left",
-          key: "idContract",
+          key: "id",
         },
         {
           title: "Название контракта",
@@ -214,11 +205,11 @@ export default {
         },
         {
           title: "Общее количество часов",
-          key: "allTime",
+          key: "allTimeWork",
         },
         {
           title: "Общее оставшихся часов",
-          key: "allTimeDiff",
+          key: "allRemainTime",
         },
         {
           title: "Проверено менеджером",
@@ -233,66 +224,68 @@ export default {
           key: "isPayment",
         },
       ],
-      contracts: [
-        {
-          idContract: "1",
-          nameContract: "Контракт 1",
-          startDate: formatDate.convertDate(new Date()),
-          endDate: formatDate.convertDate(new Date()),
-          allTime: 100,
-          allTimeDiff: 96,
-          isCheckManager: "OK",
-          isCheckAdmin: "NOT",
-          isPayment: "NOT",
-        },
-      ],
-      contract: {
-        idContract: "1",
-        nameContract: "Контракт 1",
-        startDate: formatDate.convertDate(new Date()),
-        endDate: formatDate.convertDate(new Date()),
-        allTime: 100,
-        allTimeDiff: 96,
-        isPayment: "OK",
-        isCheckManager: "OK",
-        isCheckAdmin: "OK",
-        urlTime: "http://localhost:8080/ViewingTime?search=1",
-        descriptionContract: "Описание",
-        chequeForOneHours: "700",
-      },
+      contracts: [],
+      contract: new ContractObject(),
     };
   },
 
   methods: {
     getContracts() {
-      let userId = this.user ? this.user.id : this.$store.getters.id;
+      let userId = this.user.id ? this.user.id : this.$store.getters.id;
       this.isLoading = true;
+      const contracts = getContracts(userId);
       setTimeout(() => {
-        console.log(userId);
+        this.contracts = JSON.parse(JSON.stringify(contracts));
+        this.contracts.forEach((element) => {
+          element.startDate = formatDate.convertDate(
+            new Date(element.startDate)
+          );
+          element.endDate = formatDate.convertDate(new Date(element.endDate));
+          element.isCheckManager = element.isCheckManager ? "Да" : "Нет";
+          element.isCheckAdmin = element.isCheckAdmin ? "Да" : "Нет";
+          element.isPayment = element.isPayment ? "Да" : "Нет";
+        });
+        this.isLoading = false;
+      }, 4000);
+    },
+
+    getUsers() {
+      this.isLoading = true;
+      const users = getUsers();
+      setTimeout(() => {
+        this.users = users;
+        this.user = users.find((user) => user.id == this.$store.getters.id);
         this.isLoading = false;
       }, 3000);
     },
 
-    getUsers() {
-      this.user = this.users.find((user) => user.id == this.$store.getters.id);
-    },
-
     openContract(item) {
       this.inDialog = true;
+      this.isLoadingDialog = true;
+      const contract = getContract(item.id);
+      setTimeout(() => {
+        this.contract = JSON.parse(JSON.stringify(contract));
+        this.contract = new ContractObject(this.contract);
+        this.isLoadingDialog = false;
+      }, 3000);
     },
 
     confirmForPayment() {
       this.isLoadingDialog = true;
+      this.contract.isCheckAdmin = true;
+      putContract(this.contract);
       setTimeout(() => {
-        this.contract.isCheckAdmin = "OK";
+        this.getContracts();
         this.isLoadingDialog = false;
       }, 3000);
     },
 
     cancelForPayment() {
       this.isLoadingDialog = true;
+      this.contract.isCheckAdmin = false;
+      putContract(this.contract);
       setTimeout(() => {
-        this.contract.isCheckAdmin = "NOT";
+        this.getContracts();
         this.isLoadingDialog = false;
       }, 3000);
     },
