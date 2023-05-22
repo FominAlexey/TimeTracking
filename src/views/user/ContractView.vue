@@ -257,10 +257,10 @@ export default {
         this.$router.replace({ idContract: null });
       }, 3000);
     }
+    this.getContracts();
   },
 
   data() {
-    this.getContracts();
     return {
       users: [],
       user: {},
@@ -350,10 +350,6 @@ export default {
       this.inDialog = true;
       this.isLoadingDialog = true;
       const contract = getContract(item.id);
-      console.log(
-        "🚀 ~ file: ContractView.vue:355 ~ openContract ~ contract:",
-        contract
-      );
       setTimeout(() => {
         if (contract) {
           this.contract = JSON.parse(JSON.stringify(contract));
@@ -362,7 +358,6 @@ export default {
           this.showMessage("Ошибка! Данные по контракту не были получены!");
           this.inDialog = false;
         }
-
         this.isLoadingDialog = false;
       }, 3000);
     },

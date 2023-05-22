@@ -90,6 +90,7 @@ import "@/assets/styles/views/viewingTimeView.css";
 import formatDate from "@/helpers/formatDate";
 import StateMixins from "@/mixins/state";
 import MessageMixins from "@/mixins/messageView";
+
 import TimeObject from "@/store/objects/times/TimeObject";
 
 import Loader from "@/components/Loader.vue";
@@ -122,10 +123,10 @@ export default {
     if (this.isAdmin || this.isManager || this.isAccountant) {
       this.getUsers();
     }
+    this.getTimes();
   },
 
   data() {
-    this.getTimes();
     return {
       users: [],
       user: {},

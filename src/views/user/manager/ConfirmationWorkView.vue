@@ -15,7 +15,7 @@
       :loading="isLoading"
       color="#fd1d1d"
       returnObject
-      @update:modelValue="getCompletedTime"
+      @update:modelValue="getTimes"
     >
     </v-select>
   </v-container>
@@ -38,37 +38,25 @@
       <v-row class="mb-3">
         Номер времени:
         <b class="pl-1">
-          {{ time.idTime }}
+          {{ time.id }}
         </b>
       </v-row>
       <v-row class="mb-3">
         Время начала:
         <b class="pl-1">
-          {{ time.startDate }}
+          {{ formatDate.convertDate(new Date(time.startDate)) }}
         </b>
       </v-row>
       <v-row class="mb-3">
         Время конца:
         <b class="pl-1">
-          {{ time.endDate }}
+          {{  formatDate.convertDate(new Date(time.endDate)) }}
         </b>
       </v-row>
       <v-row class="mb-3">
         Общее рабочее время дня:
         <b class="pl-1">
-          {{ time.diffTime }}
-        </b>
-      </v-row>
-      <v-row class="mb-3">
-        Общее количество часов работы:
-        <b class="pl-1">
-          {{ time.allTime }}
-        </b>
-      </v-row>
-      <v-row class="mb-3">
-        Общее оставшихся часов:
-        <b class="pl-1">
-          {{ time.allTimeDiff }}
+          {{ time.remainTime }}
         </b>
       </v-row>
       <v-row class="mb-3">
@@ -78,31 +66,18 @@
         </b>
       </v-row>
       <v-row class="mb-3">
-        Название контракта:
-        <b class="pl-1">
-          {{ time.nameContract }}
-        </b>
-      </v-row>
-      <v-row class="mb-3">
         Ссылка на контракт:
         <a :href="time.urlContract" target="_blank">
           {{ time.urlContract }}
         </a>
       </v-row>
       <v-row class="mb-3">
-        Оплата за час работы:
-        <b class="pl-1 pr-1">
-          {{ time.chequeForOneHours }}
-        </b>
-        руб.
-      </v-row>
-      <v-row class="mb-3">
         Подтверждено менеджером:
         <b class="pl-1">
-          {{ time.isCheckManager }}
+          {{ time.isCheckManager ? "Да" : "Нет"  }}
         </b>
       </v-row>
-      <v-row class="mb-3" justify="center" v-if="time.isCheckManager != 'OK'">
+      <v-row class="mb-3" justify="center" v-if="time.isCheckManager != true">
         <v-btn
           class="button-success"
           variant="elevated"
@@ -111,7 +86,7 @@
           >Подтвердить работу</v-btn
         >
       </v-row>
-      <v-row class="mb-3" justify="center" v-if="time.isCheckManager != 'NOT'">
+      <v-row class="mb-3" justify="center" v-if="time.isCheckManager != false">
         <v-btn
           class="button-success"
           variant="elevated"
@@ -132,59 +107,45 @@ import formatDate from "@/helpers/formatDate";
 import StateMixins from "@/mixins/state";
 import MessageMixins from "@/mixins/messageView";
 
+import TimeObject from "@/store/objects/times/TimeObject";
+
 import Loader from "@/components/Loader.vue";
 import StateContainer from "@/components/StateContainer.vue";
 import Snackbar from "@/components/SnackBar.vue";
 import Dialog from "@/components/Dialog.vue";
 import Table from "@/components/Table.vue";
 
+import { getUsers } from "@/dataBase/gunDB/users";
+
+import { getTimes, getTime, putTime } from "@/dataBase/gunDB/times";
+
 export default {
   mixins: [StateMixins, MessageMixins],
 
+  mounted() {
+    this.getUsers();
+    this.getTimes();
+  },
+
   data() {
     return {
-      users: [
-        {
-          id: 1,
-          userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
-          email: "Lekha@test.ru",
-          fullName: "Aleksey",
-          role: "Admin",
-        },
-        {
-          id: 2,
-          userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c32",
-          email: "Vlad@test.ru",
-          fullName: "Vladislav",
-          role: "Worker",
-        },
-      ],
-      user: {
-        id: 1,
-        userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
-        email: "Lekha@test.ru",
-        fullName: "Aleksey",
-        role: "Admin",
-      },
+      users: [],
+      user: {},
       isLoading: false,
       isLoadingDialog: false,
       inDialog: false,
+      formatDate: formatDate,
       search: "",
       headers: [
-        {
+         {
           title: "Номер времени",
           align: "left",
-          key: "idTime",
+          key: "id",
         },
         {
           title: "Номер контракта",
           align: "left",
           key: "idContract",
-        },
-        {
-          title: "Название контракта",
-          align: "left",
-          key: "nameContract",
         },
         {
           title: "Начало работы",
@@ -197,78 +158,74 @@ export default {
         },
         {
           title: "Общее рабочее время дня",
-          key: "diffTime",
-        },
-        {
-          title: "Общее количество часов",
-          key: "allTime",
-        },
-        {
-          title: "Общее оставшихся часов",
-          key: "allTimeDiff",
+          key: "remainTime",
         },
         {
           title: "Подтверждено менеджером",
           key: "isCheckManager",
         },
       ],
-      times: [
-        {
-          idTime: "1",
-          idContract: "1",
-          nameContract: "Контракт 1",
-          startDate: formatDate.convertDate(new Date()),
-          endDate: formatDate.convertDate(new Date()),
-          diffTime: 4,
-          allTime: 100,
-          allTimeDiff: 96,
-          isCheckManager: "OK",
-        },
-      ],
-      time: {
-        idTime: "1",
-        idContract: "1",
-        nameContract: "Контракт 1",
-        startDate: formatDate.convertDate(new Date()),
-        endDate: formatDate.convertDate(new Date()),
-        diffTime: 4,
-        allTime: 100,
-        allTimeDiff: 96,
-        isCheckManager: "OK",
-        urlContract: "http://localhost:8080/Contract?idContract=1",
-        chequeForOneHours: "700",
-      },
+      times: [],
+      time: new TimeObject(),
     };
   },
 
   methods: {
-    getCompletedTime() {
+    getTimes() {
+      let userId = this.user?.id ? this.user.id : this.$store.getters.id;
       this.isLoading = true;
+      const times = getTimes(userId);
       setTimeout(() => {
+        this.times = JSON.parse(JSON.stringify(times));
+        this.times.forEach((element) => {
+          element.isCheckManager = element.isCheckManager ? "Да" : "Нет";
+          element.startDate = formatDate.convertDate(
+            new Date(element.startDate)
+          );
+          element.endDate = formatDate.convertDate(new Date(element.endDate));
+        });
+        this.isLoading = false;
+      }, 4000);
+    },
+
+    getUsers() {
+      this.isLoading = true;
+      const users = getUsers();
+      setTimeout(() => {
+        this.users = users;
+        this.user = users.find((user) => user.id == this.$store.getters.id);
         this.isLoading = false;
       }, 3000);
     },
 
-    getUsers() {
-      this.user = this.users.find((user) => user.id == this.$store.getters.id);
-    },
-
     openCompletedTime(item) {
       this.inDialog = true;
+      this.isLoadingDialog = true;
+      const time = getTime(item.id);
+      setTimeout(() => {
+        this.time = JSON.parse(JSON.stringify(new TimeObject(time)));
+        this.isLoadingDialog = false;
+      }, 3000);
     },
 
     confirmWork() {
       this.isLoadingDialog = true;
+      this.time.isCheckManager = true;
+      const response = putTime(this.time);
       setTimeout(() => {
-        this.time.isCheckManager = "OK";
+        this.showMessage(response);
+        this.getTimes();
         this.isLoadingDialog = false;
       }, 3000);
     },
 
     cancelWork() {
       this.isLoadingDialog = true;
+      this.time.isCheckManager = false;
+      const response = putTime(this.time);
       setTimeout(() => {
-        this.time.isCheckManager = "NOT";
+        this.showMessage(response);
+        this.getTimes();
         this.isLoadingDialog = false;
       }, 3000);
     },

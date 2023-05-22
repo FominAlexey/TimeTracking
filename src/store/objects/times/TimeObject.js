@@ -1,6 +1,7 @@
 export default class ContractObject {
   id = null;
   idContract = null;
+  idUser = null;
   remainTime = null;
   startDate = null;
   endDate = null;
@@ -11,6 +12,7 @@ export default class ContractObject {
     if (time) {
       this.id = time.id;
       this.idContract = time.idContract;
+      this.idUser = time.idUser;
       this.remainTime = time.remainTime;
       this.startDate = time.startDate;
       this.endDate = time.endDate;

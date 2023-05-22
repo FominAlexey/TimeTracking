@@ -273,8 +273,9 @@ export default {
     confirmForPayment() {
       this.isLoadingDialog = true;
       this.contract.isCheckAdmin = true;
-      putContract(this.contract);
+      const response = putContract(this.contract);
       setTimeout(() => {
+        this.showMessage(response);
         this.getContracts();
         this.isLoadingDialog = false;
       }, 3000);
@@ -283,8 +284,9 @@ export default {
     cancelForPayment() {
       this.isLoadingDialog = true;
       this.contract.isCheckAdmin = false;
-      putContract(this.contract);
+      const response = putContract(this.contract);
       setTimeout(() => {
+        this.showMessage(response);
         this.getContracts();
         this.isLoadingDialog = false;
       }, 3000);

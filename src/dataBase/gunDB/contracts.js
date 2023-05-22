@@ -41,9 +41,7 @@ export function getContracts(userId, all = false) {
 
   contracts = [...new Set(contracts)];
   if (!all) {
-    const contractsFilter = contracts.filter((val) => {
-      return val.idUser == userId;
-    });
+    const contractsFilter = contracts.filter((val) => val.idUser == userId);
     return contractsFilter;
   }
   return contracts

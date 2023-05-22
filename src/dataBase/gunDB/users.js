@@ -9,7 +9,7 @@ export function getUsers() {
   //   fullName: "Фомин Алексей Вадимович",
   //   email: "lekha.fomin@test.ru",
   //   numberPhone: "+7-955-666-78-78",
-  //   role: "Admin",
+  //   role: "Worker",
   //   startTimeWork:
   //     "Wed May 10 2023 21:51:34 GMT+0300(Москва, стандартное время)",
   //   paymentOnHour: "1000",
