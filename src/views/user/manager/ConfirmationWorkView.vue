@@ -50,7 +50,7 @@
       <v-row class="mb-3">
         Время конца:
         <b class="pl-1">
-          {{  formatDate.convertDate(new Date(time.endDate)) }}
+          {{ formatDate.convertDate(new Date(time.endDate)) }}
         </b>
       </v-row>
       <v-row class="mb-3">
@@ -74,7 +74,7 @@
       <v-row class="mb-3">
         Подтверждено менеджером:
         <b class="pl-1">
-          {{ time.isCheckManager ? "Да" : "Нет"  }}
+          {{ time.isCheckManager ? "Да" : "Нет" }}
         </b>
       </v-row>
       <v-row class="mb-3" justify="center" v-if="time.isCheckManager != true">
@@ -117,7 +117,14 @@ import Table from "@/components/Table.vue";
 
 import { getUsers } from "@/dataBase/gunDB/users";
 
-import { getTimes, getTime, putTime } from "@/dataBase/gunDB/times";
+import { getContract, putContract } from "@/dataBase/gunDB/contracts";
+
+import {
+  getTimes,
+  getTime,
+  putTime,
+  getTimesInContract,
+} from "@/dataBase/gunDB/times";
 
 export default {
   mixins: [StateMixins, MessageMixins],
@@ -137,7 +144,7 @@ export default {
       formatDate: formatDate,
       search: "",
       headers: [
-         {
+        {
           title: "Номер времени",
           align: "left",
           key: "id",
@@ -215,6 +222,7 @@ export default {
       setTimeout(() => {
         this.showMessage(response);
         this.getTimes();
+        this.recalculationCheckManagerInContract();
         this.isLoadingDialog = false;
       }, 3000);
     },
@@ -226,7 +234,26 @@ export default {
       setTimeout(() => {
         this.showMessage(response);
         this.getTimes();
+        this.recalculationCheckManagerInContract();
         this.isLoadingDialog = false;
+      }, 3000);
+    },
+
+    recalculationCheckManagerInContract() {
+      const contract = getContract(this.time.idContract);
+      const times = getTimesInContract(this.time.idContract);
+      setTimeout(() => {
+        const checkManagerTimes = times.find(
+          (time) => time.isCheckManager == false
+        );
+        const checkAllRemainTime = contract.allRemainTime;
+        if (!checkManagerTimes && checkAllRemainTime == 0) {
+          contract.isCheckManager = true;
+          putContract(contract);
+        } else {
+          contract.isCheckManager = false;
+          putContract(contract);
+        }
       }, 3000);
     },
   },

@@ -11,6 +11,7 @@ export default class ContractObject {
   isPayment = null;
   descriptionContract = null;
   paymentOnHour = null;
+  urlContract = null;
 
   constructor(contract = null) {
     if (contract) {
@@ -26,6 +27,7 @@ export default class ContractObject {
       this.isPayment = contract.isPayment;
       this.descriptionContract = contract.descriptionContract;
       this.paymentOnHour = contract.paymentOnHour;
+      this.urlContract = "http://localhost:8080/Contract?idContract=" + this.id;
     }
   }
 

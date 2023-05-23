@@ -18,7 +18,7 @@
       :loading="isLoading"
       color="#fd1d1d"
       returnObject
-      @update:modelValue="getContracts"
+      @update:modelValue="getContract"
     >
     </v-select>
   </v-container>
@@ -29,12 +29,19 @@
         <a :href="contract.urlContract" target="_blank">
           {{ contract.nameContract }}
         </a>
-        <div>Время начала контракта: {{ contract.startDate }}</div>
-        <div>Время конца контракта: {{ contract.endDate }}</div>
-        <div>Оставшееся время контракта: {{ contract.allTimeDiff }}</div>
+        <div>
+          Время начала контракта:
+          {{ formatDate.convertDate(new Date(contract.startDate)) }}
+        </div>
+        <div>
+          Время конца контракта:
+          {{ formatDate.convertDate(new Date(contract.endDate)) }}
+        </div>
+        <div>Оставшееся время контракта: {{ contract.allRemainTime }}</div>
       </section>
+      <v-divider></v-divider>
       <section class="text-h6">
-        <div>Время на данный момент: {{ timeNow }}</div>
+        <div>Время на данный момент: {{ formatDate.convertDate(timeNow) }}</div>
         <v-btn
           v-if="!timeToRequest"
           class="button-success"
@@ -43,13 +50,15 @@
           >Начать работу</v-btn
         >
         <article v-if="timeToRequest">
-          <div>Время начала работы: {{ timeToRequest.timeNow }}</div>
-          <div>Время конца работы: {{ timeToRequest.timeEnd }}</div>
-          <v-btn
-            v-if="!timeToRequest.timeEnd"
-            class="button-success"
-            variant="elevated"
-            @click="endWork"
+          <div>
+            Время начала работы:
+            {{ formatDate.convertDate(new Date(timeToRequest.timeNow)) }}
+          </div>
+          <div v-if="timeToRequest.timeEnd">
+            Время конца работы:
+            {{ formatDate.convertDate(new Date(timeToRequest.timeEnd)) }}
+          </div>
+          <v-btn class="button-success" variant="elevated" @click="endWork"
             >Закончить работу</v-btn
           >
         </article>
@@ -66,8 +75,20 @@ import formatDate from "@/helpers/formatDate";
 import StateMixins from "@/mixins/state";
 import MessageMixins from "@/mixins/messageView";
 
+import ContractObject from "@/store/objects/contracts/ContractObject";
+
+import TimeObject from "@/store/objects/times/TimeObject";
+
 import Loader from "@/components/Loader.vue";
 import Snackbar from "@/components/SnackBar.vue";
+
+import { getContracts, putContract } from "@/dataBase/gunDB/contracts";
+import {
+  createTime,
+  getTime,
+  putTime,
+  getTimesInContract,
+} from "@/dataBase/gunDB/times";
 
 export default {
   mixins: [StateMixins, MessageMixins],
@@ -84,8 +105,10 @@ export default {
     return {
       contracts: [],
       contract: null,
+      time: new TimeObject(),
       isLoading: false,
       inDialog: false,
+      formatDate: formatDate,
       timeNow: "",
       timeToRequest: null,
     };
@@ -93,68 +116,80 @@ export default {
 
   methods: {
     getTimeNow() {
-      this.timeNow = formatDate.convertDate(new Date());
+      this.timeNow = new Date();
     },
 
     getContracts() {
       this.isLoading = true;
+      const contracts = getContracts(this.$store.getters.id);
       setTimeout(() => {
-        this.contracts = [
-          {
-            id: 1,
-            userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
-            nameContract: "Контракт 1",
-            startDate: formatDate.convertDate(new Date()),
-            endDate: formatDate.convertDate(new Date()),
-            allTime: 100,
-            allTimeDiff: 96,
-            urlContract: "http://localhost:8080/Contract?idContract=1",
-          },
-          {
-            id: 2,
-            userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c32",
-            nameContract: "Контракт 2",
-            startDate: formatDate.convertDate(new Date()),
-            endDate: formatDate.convertDate(new Date()),
-            allTime: 100,
-            allTimeDiff: 96,
-            urlContract: "http://localhost:8080/Contract?idContract=2",
-          },
-        ];
+        this.contracts = JSON.parse(JSON.stringify(contracts));
         this.isLoading = false;
-      }, 3000);
+      }, 4000);
     },
 
     getContract() {
-      this.isLoading = true;
-      setTimeout(() => {
-        this.contract = {
-          id: 1,
-          userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
-          nameContract: "Контракт 1",
-          startDate: formatDate.convertDate(new Date()),
-          endDate: formatDate.convertDate(new Date()),
-          allTime: 100,
-          allTimeDiff: 96,
-          urlContract: "http://localhost:8080/Contract?idContract=1",
-        };
+      this.contract = new ContractObject(this.contract);
+      this.recalculationTimeInContract();
+    },
 
+    goToWork() {
+      this.isLoading = true;
+      this.timeToRequest = {
+        timeNow: this.timeNow,
+        timeEnd: "",
+      };
+      this.time = new TimeObject({
+        idContract: this.contract.id,
+        idUser: this.$store.getters.id,
+        startDate: this.timeNow.toString(),
+        endDate: this.timeNow.toString(),
+      });
+      const response = createTime(this.time);
+      setTimeout(() => {
+        this.showMessage(response.text);
+        this.time.id = response.id;
+        this.isWork = true;
         this.isLoading = false;
       }, 3000);
     },
 
-    goToWork() {
-      this.timeToRequest = {
-        id: 1,
-        userAddress: "0xca3ebc3568a171f5a7101b1936fd70fd71398c21",
-        timeNow: this.timeNow,
-        timeEnd: null,
-      };
+    endWork() {
+      this.isLoading = true;
+      this.timeToRequest.timeEnd = this.timeNow;
+      const time = getTime(this.time.id);
+      setTimeout(() => {
+        const timeEdit = JSON.parse(JSON.stringify(time));
+        timeEdit.endDate = this.timeNow.toString();
+        timeEdit.remainTime = Math.round(
+          (new Date(timeEdit.endDate) - new Date(timeEdit.startDate)) /
+            (1000 * 60 * 60)
+        );
+        const response = putTime(timeEdit);
+        setTimeout(() => {
+          this.showMessage(response);
+          this.recalculationTimeInContract();
+          this.isLoading = false;
+        }, 3000);
+      }, 1000);
     },
 
-    endWork() {
-      this.timeToRequest.timeEnd = this.timeNow;
-      console.log(this.timeToRequest);
+    recalculationTimeInContract() {
+      this.isLoading = true;
+      const times = getTimesInContract(this.contract.id);
+      setTimeout(() => {
+        const allRemainTimes = times.reduce(
+          (sum, current) => sum + current.remainTime,
+          0
+        );
+        this.contract.allRemainTime =
+          this.contract.allTimeWork - allRemainTimes;
+        const response = putContract(this.contract);
+        setTimeout(() => {
+          this.showMessage(response);
+          this.isLoading = false;
+        }, 3000);
+      }, 3000);
     },
   },
 

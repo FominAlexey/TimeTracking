@@ -9,13 +9,13 @@ export function getContracts(userId, all = false) {
   //   idUser: "0",
   //   startDate: "Wed May 20 2023 21:51:34 GMT+0300(Москва, стандартное время)",
   //   endDate: "Wed May 10 2023 21:51:34 GMT+0300(Москва, стандартное время)",
-  //   allTimeWork: "100",
-  //   allRemainTime: "50",
-  //   isCheckManager: true,
+  //   allTimeWork: 100,
+  //   allRemainTime: 0,
+  //   isCheckManager: false,
   //   isCheckAdmin: false,
   //   isPayment: false,
   //   descriptionContract: "Проверка контрактов",
-  //   paymentOnHour: "700",
+  //   paymentOnHour: 700,
   // });
 
   // Gun.get("DB_Contracts").get("1").put({
@@ -24,13 +24,13 @@ export function getContracts(userId, all = false) {
   //   idUser: "1",
   //   startDate: "Wed May 20 2023 21:51:34 GMT+0300(Москва, стандартное время)",
   //   endDate: "Wed May 10 2023 21:51:34 GMT+0300(Москва, стандартное время)",
-  //   allTimeWork: "100",
-  //   allRemainTime: "50",
+  //   allTimeWork: 100,
+  //   allRemainTime: 50,
   //   isCheckManager: false,
   //   isCheckAdmin: false,
   //   isPayment: false,
   //   descriptionContract: "Проверка контрактов",
-  //   paymentOnHour: "700",
+  //   paymentOnHour: 700,
   // });
 
   Gun.get("DB_Contracts").map((data) => {

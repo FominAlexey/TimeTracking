@@ -69,9 +69,7 @@
       </v-row>
       <v-row class="mb-3">
         Ссылка на контракт:
-        <a :href="time.urlContract" target="_blank">
-          {{ time.urlContract }}
-        </a>
+        <a :href="time.urlContract" target="_blank"> Посмотреть контракт </a>
       </v-row>
       <v-row class="mb-3">
         Подтверждено менеджером:
