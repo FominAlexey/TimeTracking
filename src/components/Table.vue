@@ -8,7 +8,7 @@
       <v-text-field
         v-model="search"
         prepend-inner-icon="mdi-magnify"
-        label="Search"
+        label="Поиск"
         single-line
         hide-details
         clearable
@@ -45,6 +45,8 @@
       :headers="headers"
       :items="items"
       :search="search"
+      :items-per-page="itemsPerPage"
+      v-model:page="page"
       :multi-sort="multiSort"
       v-model:sort-by="sortBy"
       :class="{
@@ -86,6 +88,28 @@
           </td>
         </tr>
       </template>
+      <template v-slot:bottom>
+        <section class="d-flex justify-end flex-wrap">
+          <div
+            class="d-inline-flex align-center justify-end flex-wrap overflow-hidden"
+          >
+            <div>Элементов в таблице:</div>
+            <v-select
+              class="customTable-select mt-6 ml-2"
+              v-model="itemsPerPage"
+              :items="[5, 10, 25, 50]"
+              variant="solo"
+            ></v-select>
+            <div class="ml-2">{{ `${page} из ${pageCount} страница` }}</div>
+            <v-pagination
+              v-model="page"
+              :length="pageCount"
+              total-visible="0"
+              show-first-last-page="true"
+            ></v-pagination>
+          </div>
+        </section>
+      </template>
     </v-data-table>
   </v-container>
 </template>
@@ -114,7 +138,13 @@ export default {
     },
     externalSearch: {
       type: String,
-      default: '',
+      default: "",
+    },
+  },
+
+  computed: {
+    pageCount() {
+      return Math.ceil(this.items.length / this.itemsPerPage);
     },
   },
 
@@ -129,6 +159,8 @@ export default {
       sortBy: [{ key: "", order: "" }],
       search: "",
       isMobileDevice: false,
+      itemsPerPage: 5,
+      page: 1,
     };
   },
 

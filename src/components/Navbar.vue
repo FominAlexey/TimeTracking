@@ -55,12 +55,9 @@
       <template v-slot:append>
         <v-list>
           <v-list-item
-            :title="
-              rolesUsers.find((status) => status.value == roleUser).title +
-              ' ' +
-              fullNameUser
-            "
+            :title="rolesUsers.find((status) => status.value == roleUser).title"
           >
+            {{ fullNameUser }}
           </v-list-item>
           <v-list-item :title="emailUser"> </v-list-item>
           <v-list-item>
