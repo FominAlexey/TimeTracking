@@ -8,7 +8,7 @@ export function getTimes(userId, all = false) {
   //   idContract: 0,
   //   idUser: 0,
   //   remainTime: 10,
-  //   startDate: "Wed May 20 2023 21:51:34 GMT+0300(Москва, стандартное время)",
+  //   startDate: "Wed May 10 2023 11:51:34 GMT+0300(Москва, стандартное время)",
   //   endDate: "Wed May 10 2023 21:51:34 GMT+0300(Москва, стандартное время)",
   //   isCheckManager: true,
   // });
@@ -17,9 +17,9 @@ export function getTimes(userId, all = false) {
   //   id: 1,
   //   idContract: 1,
   //   idUser: 1,
-  //   remainTime: 8,
-  //   startDate: "Wed May 20 2023 21:51:34 GMT+0300(Москва, стандартное время)",
-  //   endDate: "Wed May 10 2023 21:51:34 GMT+0300(Москва, стандартное время)",
+  //   remainTime: 12,
+  //   startDate: "Wed May 20 2023 11:51:34 GMT+0300(Москва, стандартное время)",
+  //   endDate: "Wed May 20 2023 23:51:34 GMT+0300(Москва, стандартное время)",
   //   isCheckManager: true,
   // });
 

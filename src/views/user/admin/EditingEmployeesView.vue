@@ -23,7 +23,7 @@
   <custom-dialog
     v-model:value="inDialog"
     width="auto"
-    minWidth="300"
+    minWidth="760"
     class="pl-0 pr-0"
   >
     <v-row class="mb-10" v-if="isLoadingDialog" justify="center">
@@ -283,7 +283,8 @@ export default {
 
     addWorkerToCompany() {
       this.isLoadingDialog = true;
-      createUser(this.worker);
+      const response = createUser(this.worker);
+      this.showMessage(response);
       this.getWorkers();
       setTimeout(() => {
         this.isLoadingDialog = false;
@@ -307,7 +308,8 @@ export default {
 
     editWorker() {
       this.isLoadingDialog = true;
-      putUser(this.worker);
+      const response = putUser(this.worker);
+      this.showMessage(response);
       this.getWorkers();
       setTimeout(() => {
         this.isLoadingDialog = false;

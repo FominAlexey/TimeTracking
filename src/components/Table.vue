@@ -49,6 +49,7 @@
       v-model:page="page"
       :multi-sort="multiSort"
       v-model:sort-by="sortBy"
+      no-data-text="Нет данных"
       :class="{
         'customTable-mobile': isMobileDevice,
         'customTable-displayNone': isMobileDevice,

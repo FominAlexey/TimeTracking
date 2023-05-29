@@ -9,7 +9,7 @@ export function getUsers() {
   //   fullName: "Фомин Алексей Вадимович",
   //   email: "lekha.fomin@test.ru",
   //   numberPhone: "+7-955-666-78-78",
-  //   role: "Manager",
+  //   role: "Admin",
   //   startTimeWork:
   //     "Wed May 10 2023 21:51:34 GMT+0300(Москва, стандартное время)",
   //   paymentOnHour: "1000",
@@ -18,10 +18,10 @@ export function getUsers() {
   // Gun.get("DB_Users").get("1").put({
   //   id: 1,
   //   addressWallet: "0xca3ebc3568a171f5a7101b1936fd70fd71398c276",
-  //   fullName: "Ивано Сергей Сергеевич",
+  //   fullName: "Иванов Сергей Сергеевич",
   //   email: "sergey.fomin@test.ru",
   //   numberPhone: "+7-955-333-78-78",
-  //   role: "Admin",
+  //   role: "Worker",
   //   startTimeWork:
   //     "Wed May 10 2023 21:51:34 GMT+0300(Москва, стандартное время)",
   //   paymentOnHour: "1000",

@@ -58,7 +58,7 @@
             Время конца работы:
             {{ formatDate.convertDate(new Date(timeToRequest.timeEnd)) }}
           </div>
-          <v-btn class="button-success" variant="elevated" @click="endWork"
+          <v-btn v-if="!isEndTime" class="button-success" variant="elevated" @click="endWork"
             >Закончить работу</v-btn
           >
         </article>
@@ -111,6 +111,7 @@ export default {
       formatDate: formatDate,
       timeNow: "",
       timeToRequest: null,
+      isEndTime: false,
     };
   },
 
@@ -158,6 +159,7 @@ export default {
       this.isLoading = true;
       this.timeToRequest.timeEnd = this.timeNow;
       const time = getTime(this.time.id);
+      this.isEndTime = true;
       setTimeout(() => {
         const timeEdit = JSON.parse(JSON.stringify(time));
         timeEdit.endDate = this.timeNow.toString();

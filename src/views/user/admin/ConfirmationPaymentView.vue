@@ -88,12 +88,6 @@
         </b>
       </v-row>
       <v-row class="mb-3">
-        Всё рабочее время:
-        <a :href="contract.urlTime" target="_blank">
-          {{ contract.urlTime }}
-        </a>
-      </v-row>
-      <v-row class="mb-3">
         Проверено менеджером:
         <b class="pl-1">
           {{ contract.isCheckManager ? "Да" : "Нет" }}
